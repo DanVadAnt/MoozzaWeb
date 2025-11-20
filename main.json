@@ -1,0 +1,308 @@
+[
+    {
+        "id": "5ca377efdfba60c4",
+        "type": "tab",
+        "label": "Главная/Профиль",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f85c6b58bdda92bd",
+        "type": "http in",
+        "z": "5ca377efdfba60c4",
+        "name": "",
+        "url": "/mainprf",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "6a4a0eced5de0592"
+            ]
+        ]
+    },
+    {
+        "id": "fbdcf4253bcdf6b1",
+        "type": "template",
+        "z": "5ca377efdfba60c4",
+        "name": "Внешний вид профиля",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"ru\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Система выполнения заданий</title>\n    <style>\n        {{{cssText}}}\n    </style>\n    <link rel=\"icon\" type=\"image/png\" href=\"https://cabinet.ssau.ru/asset/favicon.ico\">\n</head>\n\n<body>\n\n    <header class=\"topbar\">\n        <div class=\"divlogoname\"><img src=\"https://sun9-71.userapi.com/impg/5bKKjXmZHXD-py_TrIJPKFRQ7bS0QHjZuGtpmw/76Nc37KiTHI.jpg?size=1890x185&quality=95&sign=f3cefb5512a49c2d843e894fda497b97&type=album\" class=\"logoname\">\n        </div>\n    </header>\n\n    <div class=\"sidebar\" id=\"sidebar\">\n        <div class=\"logocenter\" id=\"logocenter\">\n            <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png\" class=\"logo\" id=\"logo\">\n        </div>\n        <button class=\"toggle-btn\" id=\"toggleBtn\">\n        <img src=\"https://github.com/Kulakov1Dima/SsauWorkspace/blob/main/hahaton_exemple_fronted/expand.png?raw=true\">\n    </button>\n        <ul class=\"menu\" id=\"menu\">\n            <li>\n                <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/home1.png\" class=\"icon\">\n                <span class=\"text\">Главная</span>\n            </li>\n            <li onclick=\"location.href='http://localhost:1880/messenger';\" style=\"cursor:pointer;\">\n                <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/messenger.png\" class=\"icon\">\n                <span class=\"text\">Мессенджер</span>\n            </li>\n            <li onclick=\"location.href='http://localhost:1880/ssau';\" style=\"cursor:pointer;\">\n                <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/schedule.png\" class=\"icon\">\n                <span class=\"text\">Расписание</span>\n            </li>\n            <li onclick=\"location.href='http://localhost:1880/logout';\" style=\"cursor:pointer;\">\n                <span class=\"logout\">Выйти</span>\n            </li>\n        </ul>\n    </div>\n\n    <div class=\"main_content\">\n        <div class=\"profile-container\">\n            <h1>Профиль</h1>\n            <h2>Редактирование</h2>\n            \n            <div class=\"profile-form\">\n                <div class=\"form-group\">\n                    <label for=\"username\">Имя пользователя:</label>\n                    <input type=\"text\" id=\"username\" value=\"{{userName}}\">\n                </div>\n                \n                <div class=\"form-group\">\n                    <label for=\"password\">Пароль:</label>\n                    <input type=\"password\" id=\"password\" placeholder=\"••••••••\">\n                </div>\n                \n                <div class=\"form-group\">\n                    <label for=\"gruppa\">Группа:</label>\n                    <input type=\"text\" id=\"gruppa\" value=\"{{gruppa}}\">\n                </div>\n                \n                <button id=\"saveBtn\" class=\"save-button\">Применить изменения</button>\n                <div id=\"errorMessage\" class=\"error-message\"></div>\n                <div id=\"successMessage\" class=\"success-message\"></div>\n            </div>\n        </div>\n    </div>\n\n    <script>\n        // Сохраняем исходные данные для сравнения\n        let originalData = {\n            username: '{{userName}}',\n            password: '{{password}}',\n            gruppa: '{{gruppa}}'\n        };\n        \n        // Функция для сброса сообщений через 3 секунды\n        function resetMessages() {\n            setTimeout(() => {\n                document.getElementById('errorMessage').textContent = '';\n                document.getElementById('successMessage').textContent = '';\n            }, 3000);\n        }\n\n        document.addEventListener('DOMContentLoaded', function() {\n            // Обработка сворачивания/разворачивания боковой панели\n            const sidebar = document.getElementById('sidebar');\n            const toggleBtn = document.getElementById('toggleBtn');\n            const logo = document.getElementById('logo');\n            const logocenter = document.getElementById('logocenter');\n            const menu = document.getElementById('menu');\n            \n            toggleBtn.addEventListener('click', () => {\n                if (!toggleBtn.classList.contains('expanded1')) {\n                    toggleBtn.classList.add('expanded1');\n                    sidebar.classList.add('expanded1');\n                }\n                else{\n                    toggleBtn.classList.remove('expanded1');\n                    sidebar.classList.remove('expanded1');\n                }\n            });\n\n            sidebar.addEventListener('mouseenter', () => {\n                logo.src = 'http://localhost:1880/logo_osnovnoy.png';\n                logo.classList.add('small');\n                logocenter.classList.add('small');\n                menu.classList.add('small');\n            });\n\n            sidebar.addEventListener('mouseleave', () => {\n                if (!sidebar.classList.contains('expanded1')) {\n                    logo.src = 'https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png';\n                    logo.classList.remove('small');\n                    logocenter.classList.remove('small');\n                    menu.classList.remove('small');\n                }\n            });\n\n            // Обработка сохранения профиля\n            const saveBtn = document.getElementById('saveBtn');\n            const errorMessage = document.getElementById('errorMessage');\n            const successMessage = document.getElementById('successMessage');\n            \n            saveBtn.addEventListener('click', function() {\n                const username = document.getElementById('username').value.trim();\n                const password = document.getElementById('password').value.trim();\n                const gruppa = document.getElementById('gruppa').value.trim();\n                \n                // Очищаем предыдущие сообщения\n                errorMessage.textContent = '';\n                successMessage.textContent = '';\n                \n                // Проверка на пустые поля\n                if (!username || !gruppa) {\n                    errorMessage.textContent = 'Имя пользователя и группа должны быть заполнены!';\n                    resetMessages();\n                    return;\n                }\n\n                if (password && password.trim() !== '' && password.length < 6) {\n                    errorMessage.textContent = 'Пароль должен содержать минимум 6 символов!';\n                    resetMessages();\n                    return;\n                }\n                \n                // Проверка на изменения\n                if (username === originalData.username && \n                    password === originalData.password && \n                    gruppa === originalData.gruppa) {\n                    errorMessage.textContent = 'Нет изменений для сохранения!';\n                    resetMessages();\n                    return;\n                }\n                \n                // Отправка данных на сервер\n                fetch('/update_profile', {\n                    method: 'POST',\n                    headers: {\n                        'Content-Type': 'application/json'\n                    },\n                    body: JSON.stringify({\n                        username: username,\n                        password: password,\n                        gruppa: gruppa\n                    })\n                })\n                .then(response => {\n                    if (!response.ok) {\n                        throw new Error('Ошибка сети');\n                    }\n                    return response.json();\n                })\n                .then(data => {\n                    if (data.success) {\n                        successMessage.textContent = 'Изменения успешно сохранены!';\n                        // Обновляем оригинальные данные\n                        originalData = {\n                            username: username,\n                            password: password,\n                            gruppa: gruppa\n                        };\n                    } else {\n                        errorMessage.textContent = 'Ошибка при сохранении: ' + (data.message || 'Неизвестная ошибка');\n                        // Восстанавливаем значения из оригинальных данных\n                        document.getElementById('username').value = originalData.username;\n                        document.getElementById('password').value = originalData.password;\n                        document.getElementById('gruppa').value = originalData.gruppa;\n                    }\n                    resetMessages();\n                })\n                .catch(error => {\n                    errorMessage.textContent = 'Ошибка сети: ' + error.message;\n                    // Восстанавливаем значения из оригинальных данных\n                    document.getElementById('username').value = originalData.username;\n                    document.getElementById('password').value = originalData.password;\n                    document.getElementById('gruppa').value = originalData.gruppa;\n                    resetMessages();\n                });\n            });\n        });\n    </script>\n\n</body>\n\n</html>",
+        "output": "str",
+        "x": 810,
+        "y": 60,
+        "wires": [
+            [
+                "a53ae1e7ca8f1246"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "a53ae1e7ca8f1246",
+        "type": "http response",
+        "z": "5ca377efdfba60c4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1050,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "c059d09ca6b29df7",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "css",
+        "func": "var css = `\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 0;\n    height: 1200px;\n    background-color: #edf3fec1;\n}\n\n.topbar {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 80px;\n    background-color: #fff;\n    color: white;\n    display: flex;\n    align-items: center;\n    box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n    padding-left: 20px;\n    z-index: 1;\n}\n\n.sidebar {\n    width: 45px;\n    height: 100%;\n    background-color: #fff;\n    color: white;\n    position: fixed;\n    top: 0;\n    left: 0;\n    transition: width 0.3s;\n    overflow: visible;\n    white-space: nowrap;\n    box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n    padding: 10px;\n    z-index: 10;\n}\n\n.main_content {\n    top: 105px;\n    position: relative;\n    color: black;\n    margin-top: 10px;\n    margin-left: 100px;\n    padding: 2px;\n    transition: margin-left 0.3s ease;\n}\n\n.profile-container {\n    max-width: 800px;\n    margin: 20px auto;\n    background: white;\n    padding: 30px;\n    border-radius: 10px;\n    box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n}\n\n.profile-container h1 {\n    font-size: 28px;\n    margin-bottom: 5px;\n    color: #333;\n}\n\n.profile-container h2 {\n    font-size: 18px;\n    margin-top: 0;\n    margin-bottom: 30px;\n    color: #666;\n    font-weight: normal;\n}\n\n.profile-form {\n    display: flex;\n    flex-direction: column;\n    gap: 20px;\n}\n\n.form-group {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.form-group label {\n    font-weight: bold;\n    color: #444;\n}\n\n.form-group input {\n    padding: 10px 15px;\n    border: 1px solid #ddd;\n    border-radius: 5px;\n    font-size: 16px;\n    transition: border-color 0.3s;\n}\n\n.form-group input:focus {\n    border-color: #0017e2;\n    outline: none;\n}\n\n.save-button {\n    padding: 12px 20px;\n    background-color: #0017e2;\n    color: white;\n    border: none;\n    border-radius: 5px;\n    font-size: 16px;\n    cursor: pointer;\n    transition: background-color 0.3s;\n    margin-top: 20px;\n}\n\n.save-button:hover {\n    background-color: #3054b8;\n}\n\n.error-message {\n    color: #d32f2f;\n    margin-top: 15px;\n    font-size: 14px;\n    min-height: 20px;\n}\n\n.success-message {\n    color: #388e3c;\n    margin-top: 15px;\n    font-size: 14px;\n    min-height: 20px;\n}\n\n/* Остальные стили из предыдущей версии */\n.sidebar.expanded1 {\n    width: 340px;\n    transition: width 0.7s ease;\n}\n\n.sidebar:hover {\n    width: 340px;\n    transition: width 0.7s ease;\n}\n\n.toggle-btn {\n    cursor: pointer;\n    text-align: center;\n    padding: 10px;\n    background-color: #EDF3FE;\n    border: none;\n    color: white;\n    width: 33px;\n    height: 33px;\n    border-radius: 50%;\n    outline: none;\n    position: absolute;\n    left: 82%;\n    top: 40px;\n    box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n    padding: 10px;\n}\n\n.toggle-btn.expanded1 {\n    transform: rotate(180deg);\n}\n\n.toggle-btn img {\n    width: 100%;\n    height: 100%;\n    object-fit: contain;\n    display: block;\n    transition: transform 0.2s ease;\n}\n\n.button-list {\n    list-style-type: none;\n    padding: 0;\n    margin: 0;\n}\n\n.button-list li {\n    display: flex;\n    align-items: center;\n    padding: 10px;\n}\n\n.button-list li img {\n    width: 24px;\n    height: 24px;\n    margin-right: 10px;\n}\n\n.button-list li:hover {\n    background-color: #555;\n}\n\n.text {\n    display: none;\n}\n\n.sidebar.expanded .text {\n    display: inline;\n}\n\n.sidebar:hover .text {\n    display: inline;\n}\n\n.logo {\n    width: 30px;\n    height: auto;\n    left: 84%;\n}\n\n.logo.small {\n    width: 300px;\n    height: auto;\n    transition: width 0.5s ease;\n}\n\n.logocenter {\n    border: 5px solid;\n    position: absolute;\n    top: 45px;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    padding: 10px;\n}\n\n.logocenter.small {\n    border: 6px solid;\n    position: absolute;\n    top: 110px;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    padding: 10px;\n}\n\n.logoname {\n    width: 230px;\n    height: auto;\n}\n\n.divlogoname {\n    height: auto;\n    position: absolute;\n    top: 20px;\n    left: 80px;\n    padding: 10px;\n}\n\n.menu {\n    list-style: none;\n    position: absolute;\n    color: black;\n    top: 60px;\n    width: 95%;\n    padding: 0;\n    margin: 40px 0 0 0;\n    transition: transform 0.7s ease;\n}\n\n.menu.small {\n    list-style: none;\n    position: absolute;\n    color: black;\n    top: 170px;\n    width: 95%;\n    padding: 0;\n    margin: 40px 0 0 0;\n}\n\n.menu li {\n    display: flex;\n    align-items: center;\n    padding: 12px;\n    cursor: pointer;\n    transition: background 0.6s;\n}\n\n.menu li:hover {\n    background: #EDF3FE;\n}\n\n.icon {\n    width: 24px;\n    height: 24px;\n    margin-right: 40px;\n}\n\n.text {\n    display: inline-block;\n    opacity: 0;\n    transition: opacity 0.3s ease 0.8s;\n    font-size: 18px;\n}\n\n.sidebar:not(.expanded1) .menu li,\n.sidebar:hover:not(.expanded1) .menu li {\n    justify-content: left;\n}\n\n.sidebar:not(.expanded1) .text {\n    opacity: 0;\n    visibility: hidden;\n}\n\n.sidebar.expanded1 .menu li,\n.sidebar:hover .menu li {\n    justify-content: flex-start;\n    padding-left: 5px;\n}\n\n.sidebar.expanded1 .text,\n.sidebar:hover .text {\n    opacity: 1;\n    visibility: visible;\n    transition-delay: 0.8s;\n}\n\n.sidebar.expanded1~.main_content {\n    margin-left: 400px;\n}\n`;\n\nmsg.cssText = css;\nmsg.userRole = msg.userRole;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 140,
+        "wires": [
+            [
+                "fbdcf4253bcdf6b1"
+            ]
+        ]
+    },
+    {
+        "id": "6a4a0eced5de0592",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "Проверка авторизации",
+        "func": "// Проверяем куки\nif (!msg.req.cookies || !msg.req.cookies.auth_token) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\n// Получаем ID пользователя из куки\nconst userId = msg.req.cookies.user_id;\nif (!userId) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\nmsg.topic = `SELECT * FROM users WHERE id = '${userId}'`;\nmsg.userId = userId;\n\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 60,
+        "wires": [
+            [
+                "86671ee44ac96686"
+            ],
+            [
+                "a53ae1e7ca8f1246"
+            ]
+        ]
+    },
+    {
+        "id": "3b10f71002900112",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "получение данных пользователя",
+        "func": "// Проверяем, что получили роль пользователя\nif (!msg.payload || msg.payload.length === 0) {\n    node.error(\"Не удалось получить данные пользователя\", msg);\n    return [null, msg];\n}\n\nconst userRole = msg.payload[0].role;\nmsg.userRole = userRole;\nconst userName = msg.payload[0].username;\nmsg.userName = userName;\nconst password = msg.payload[0].password;\nmsg.password = \"\";\nconst gruppa = msg.payload[0].gruppa;\nmsg.gruppa = gruppa;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "c059d09ca6b29df7"
+            ]
+        ]
+    },
+    {
+        "id": "86671ee44ac96686",
+        "type": "sqlite",
+        "z": "5ca377efdfba60c4",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "select * from events",
+        "name": "SQLite DB",
+        "x": 250,
+        "y": 140,
+        "wires": [
+            [
+                "3b10f71002900112"
+            ]
+        ]
+    },
+    {
+        "id": "f00338d477e91dab",
+        "type": "http in",
+        "z": "5ca377efdfba60c4",
+        "name": "",
+        "url": "/update_profile",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "949baab3f79baf9a"
+            ]
+        ]
+    },
+    {
+        "id": "949baab3f79baf9a",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "Проверка авторизации для обновления",
+        "func": "// Проверяем куки\nif (!msg.req.cookies || !msg.req.cookies.auth_token) {\n    msg.payload = { success: false, message: \"Не авторизован\" };\n    return [null, msg];\n}\n\n// Получаем ID пользователя из куки\nconst userId = msg.req.cookies.user_id;\nif (!userId) {\n    msg.payload = { success: false, message: \"Не авторизован\" };\n    return [null, msg];\n}\n\n// Получаем данные из тела запроса\nconst body = msg.req.body;\nif (!body.username || !body.password || !body.gruppa) {\n    msg.payload = { success: false, message: \"Все поля обязательны для заполнения\" };\n    return [null, msg];\n}\n\nmsg.userId = userId;\nmsg.username = body.username;\nmsg.password = body.password;\nmsg.gruppa = body.gruppa;\n\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 220,
+        "wires": [
+            [
+                "c0472d41a1ab9d76"
+            ],
+            [
+                "738728daf3386505"
+            ]
+        ]
+    },
+    {
+        "id": "c0472d41a1ab9d76",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "Проверка изменений",
+        "func": "// Получаем текущие данные пользователя\nmsg.topic = `SELECT username, password, gruppa FROM users WHERE id = '${msg.userId}'`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 280,
+        "wires": [
+            [
+                "4f18480bc06d28cd"
+            ]
+        ]
+    },
+    {
+        "id": "4f18480bc06d28cd",
+        "type": "sqlite",
+        "z": "5ca377efdfba60c4",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "SQLite DB",
+        "x": 1110,
+        "y": 280,
+        "wires": [
+            [
+                "1b40683c09233eb2"
+            ]
+        ]
+    },
+    {
+        "id": "1b40683c09233eb2",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "Обновление данных",
+        "func": "const bcrypt = bcryptjs;\n// Весь код заменить на:\nif (!msg.payload || msg.payload.length === 0) {\n    msg.payload = { success: false, message: \"Пользователь не найден\" };\n    return msg;\n}\n\nconst currentData = msg.payload[0];\nconst saltRounds = 10;\nlet updates = [];\nlet params = {};\n\n// Проверка изменений\nif (currentData.username !== msg.username) {\n    updates.push(\"username = :username\");\n    params.username = msg.username;\n}\n\nif (msg.password && msg.password.trim() !== '') {\n    const hash = bcrypt.hashSync(msg.password, saltRounds);\n    updates.push(\"password = :password\");\n    params.password = hash;\n}\n\nif (currentData.gruppa !== msg.gruppa) {\n    updates.push(\"gruppa = :gruppa\");\n    params.gruppa = msg.gruppa;\n}\n\nif (updates.length === 0) {\n    msg.payload = { success: false, message: \"Нет изменений для сохранения\" };\n    return msg;\n}\n\nmsg.topic = `UPDATE users SET \n    username = '${msg.username.replace(/'/g, \"''\")}', \n    password = '${params.password.replace(/'/g, \"''\")}', \n    gruppa = '${msg.gruppa.replace(/'/g, \"''\")}'\nWHERE id = '${msg.userId}'`;\nmsg.params = params;\nreturn msg;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "bcryptjs",
+                "module": "bcryptjs"
+            }
+        ],
+        "x": 900,
+        "y": 340,
+        "wires": [
+            [
+                "f7fd8e03e0b91b84"
+            ]
+        ]
+    },
+    {
+        "id": "f7fd8e03e0b91b84",
+        "type": "sqlite",
+        "z": "5ca377efdfba60c4",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "SQLite DB",
+        "x": 1110,
+        "y": 340,
+        "wires": [
+            [
+                "2bbb7943487c221d"
+            ]
+        ]
+    },
+    {
+        "id": "2bbb7943487c221d",
+        "type": "function",
+        "z": "5ca377efdfba60c4",
+        "name": "Формирование ответа",
+        "func": "msg.payload = { success: true, message: \"Данные успешно обновлены\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1330,
+        "y": 340,
+        "wires": [
+            [
+                "738728daf3386505"
+            ]
+        ]
+    },
+    {
+        "id": "738728daf3386505",
+        "type": "http response",
+        "z": "5ca377efdfba60c4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1510,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "8fdd5b53ce49cde7",
+        "type": "debug",
+        "z": "5ca377efdfba60c4",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1570,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "d3f44785a6cfb327",
+        "type": "sqlitedb",
+        "db": "C:\\sqlite\\myusersdb.db",
+        "mode": "RWC"
+    }
+]

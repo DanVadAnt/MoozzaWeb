@@ -1,0 +1,890 @@
+[
+    {
+        "id": "8cd62b9679ad11ce",
+        "type": "tab",
+        "label": "Чаты",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a9b84b854e281eb5",
+        "type": "group",
+        "z": "8cd62b9679ad11ce",
+        "name": "Работа с бд",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "78f98ed8537f4b31",
+            "7a89d7535010efb2",
+            "36386a2733d98b70",
+            "ed89fe60e9d7c467",
+            "28dae3d0cb6655d8",
+            "a031472365e48814",
+            "31f240fb5e34c6ec",
+            "c4ce28bbe2d59123",
+            "57d2671daa8fefc1",
+            "bbb778ecb3facdf4",
+            "36e9e80567617f4d",
+            "b46a07e5bed22e6c",
+            "6615d5887534ac85",
+            "66a4d0f8b9d0badf",
+            "dfb926319df5112a",
+            "dc52fc295be87803",
+            "a63b5d1a5f774d98",
+            "d1204b1faf51d6c4",
+            "954ccfcc18f82b4e",
+            "16aed3ba96a53f69",
+            "1568bd5286e59760",
+            "f21aaa2a0d85371c"
+        ],
+        "x": 114,
+        "y": 319,
+        "w": 972,
+        "h": 382
+    },
+    {
+        "id": "91454e29df862af1",
+        "type": "http in",
+        "z": "8cd62b9679ad11ce",
+        "name": "",
+        "url": "/messenger",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "896a12680931337c"
+            ]
+        ]
+    },
+    {
+        "id": "9647228e347af4de",
+        "type": "template",
+        "z": "8cd62b9679ad11ce",
+        "name": "Внешний вид списка чатов",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Активные чаты</title>\n    <link rel=\"icon\" type=\"image/png\" href=\"https://cabinet.ssau.ru/asset/favicon.ico\">\n    <style>\n        {{{cssText}}}\n    </style>\n    <style>\n        /* Дополнительные стили для этой страницы */\n        .main_content {\n            margin-left: 100px; /* Уменьшаем отступ, чтобы боковое меню было лучше видно */\n            display: grid;\n            grid-template-columns: 1fr 2fr; /*  Две колонки: для списка и для чата */\n            gap: 20px; /* Отступ между колонками */\n        }\n\n        .dialog-list-container {\n            /*  Контейнер для списка диалогов */\n        }\n\n        .dialog-list {\n            list-style: none;\n            padding: 0;\n            margin: 20px 0;\n        }\n\n        .dialog-item {\n            display: flex;\n            align-items: center;\n            padding: 10px;\n            border-bottom: 1px solid #eee;\n            cursor: pointer;\n            background-color: #fff;\n        }\n\n        .dialog-item:hover {\n            background-color: #f9f9f9;\n        }\n\n        .dialog-icon {\n            width: 30px;\n            height: 30px;\n            margin-right: 10px;\n            border-radius: 50%;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            color: white;\n        }\n\n        .dialog-icon.tz {\n            background-color: #0D47A1; /* Цвет для иконки \"ТЗ\" */\n        }\n\n        .dialog-icon.chat {\n            background-color: #1D5DEB; /* Цвет для иконки чата */\n        }\n\n        .dialog-text {\n            flex-grow: 1;\n            overflow: hidden;\n            text-overflow: ellipsis;\n            white-space: nowrap;\n        }\n\n        .chat-view {\n            display: none;\n            margin-top: 20px;\n            background-color: #fff;\n            padding: 20px;\n            border-radius: 5px;\n            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n            border-radius: 5 px;\n        }\n\n        .chat-view.active {\n            display: block;\n        }\n\n        #searchBar {\n            width: 100%;\n            padding: 10px;\n            margin-bottom: 10px;\n            border: 1px solid #ccc;\n            border-radius: 5px;\n            box-sizing: border-box;\n        }\n\n        .hidden {\n            display: none;\n        }\n\n        .chat-messages {\n            height: 300px;\n            overflow-y: scroll;\n            padding: 10px;\n            border: 1px solid #ddd;\n            margin-bottom: 10px;\n        }\n\n        .message {\n            padding: 8px 12px;\n            margin-bottom: 5px;\n            border-radius: 5px;\n            background-color: #f0f0f0;\n        }\n\n        .input-area {\n            display: flex;\n            align-items: center;\n        }\n\n        .input-area input {\n            flex-grow: 1;\n            padding: 8px;\n            border: 1px solid #ddd;\n            border-radius: 5px;\n        }\n\n        .input-area button {\n            padding: 8px 12px;\n            margin-left: 5px;\n            border: none;\n            border-radius: 5px;\n            background-color: #007bff;\n            color: white;\n            cursor: pointer;\n        }\n\n        .input-area button:hover {\n            background-color: #0056b3;\n        }\n    </style>\n</head>\n<body>\n\n<header class=\"topbar\">\n    <div class=\"divlogoname\"><img\n            src=\"https://sun9-71.userapi.com/impg/5bKKjXmZHXD-py_TrIJPKFRQ7bS0QHjZuGtpmw/76Nc37KiTHI.jpg?size=1890x185&quality=95&sign=f3cefb5512a49c2d843e894fda497b97&type=album\"\n            class=\"logoname\"></div>\n</header>\n\n<div class=\"sidebar\" id=\"sidebar\">\n    <div class=\"logocenter\" id=\"logocenter\">\n        <img\n                src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png\"\n                class=\"logo\" id=\"logo\">\n    </div>\n    <button class=\"toggle-btn\" id=\"toggleBtn\">\n        <img src=\"https://github.com/Kulakov1Dima/SsauWorkspace/blob/main/hahaton_exemple_fronted/expand.png?raw=true\">\n    </button>\n    <ul class=\"menu\" id=\"menu\">\n        <li>\n            <img\n                    src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/home1.png\"\n                    class=\"icon\">\n            <span class=\"text\">Главная</span>\n        </li>\n        <li onclick=\"location.href='http://localhost:1880/messenger';\" style=\"cursor:pointer;\">\n            <img\n                    src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/messenger.png\"\n                    class=\"icon\">\n            <span class=\"text\">Мессенджер</span>\n        </li>\n        <li onclick=\"location.href='http://localhost:1880/ssau';\" style=\"cursor:pointer;\">\n            <img                     src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/schedule.png\"\n            class=\"icon\">\n    <span class=\"text\">Расписание</span>\n</li>\n</ul>\n</div>\n\n<div class=\"main_content\">\n\n<div class=\"dialog-list-container\">\n<h2>Активные чаты</h2>\n<input type=\"text\" id=\"searchBar\" placeholder=\"Поиск...\">\n<ul class=\"dialog-list\" id=\"dialogList\">\n</ul>\n</div>\n\n<div id=\"chatView\" class=\"chat-view\">\n<h3>Название чата</h3>\n<div class=\"chat-messages\">\n    <!-- Сообщения чата будут здесь -->\n    <div class=\"message\"></div>\n    <div class=\"message\"></div>\n</div>\n<div class=\"input-area\">\n    <input type=\"text\" placeholder=\"Сообщение...\">\n    <button>Отправить</button>\n</div>\n</div>\n\n</div>\n\n<script>\n    const imagesToPreload = [\n    \"http://localhost:1880/logo_osnovnoy.png\",\n    \"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png\"\n];\n\nimagesToPreload.forEach(src => {\n    const img = new Image();\n    img.src = src;\n});\n\nconst sidebar = document.getElementById('sidebar');\nconst toggleBtn = document.getElementById('toggleBtn');\nconst logo = document.getElementById('logo');\nconst logocenter = document.getElementById('logocenter');\nconst menu = document.getElementById('menu');\n\ntoggleBtn.addEventListener('click', () => {\n    if (!toggleBtn.classList.contains('expanded1')) {\n        toggleBtn.classList.add('expanded1');\n        sidebar.classList.add('expanded1');\n    } else {\n        toggleBtn.classList.remove('expanded1');\n        sidebar.classList.remove('expanded1');\n    }\n});\n\nsidebar.addEventListener('mouseenter', () => {\n    logo.src = 'http://localhost:1880/logo_osnovnoy.png';\n    logo.classList.add('small');\n    logocenter.classList.add('small');\n    menu.classList.add('small');\n});\n\nsidebar.addEventListener('mouseleave', () => {\n    if (!sidebar.classList.contains('expanded1')) {\n        logo.src = 'https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png';\n        logo.classList.remove('small');\n        logocenter.classList.remove('small');\n        menu.classList.remove('small');\n    }\n});\n\ndocument.addEventListener('DOMContentLoaded', function () {\n    const dialogList = document.getElementById('dialogList');\n    const chatView = document.getElementById('chatView');\n    const searchBar = document.getElementById('searchBar');\n    const chatMessages = chatView.querySelector('.chat-messages');\n    const messageInput = chatView.querySelector('input');\n    const sendButton = chatView.querySelector('button');\n\n    let currentChat = null;\n    let refreshInterval = null;\n\n    const dialogs = [\n        {\n            type: 'tz',\n            name: 'Использование Linux',\n            url: 'https://localhost:1880/subject?name=Использование%20Linux'\n        },\n        {\n            type: 'chat',\n            name: 'Использование Linux | Чат',\n            chatname: 'Использование Linux'\n        },\n        {\n            type: 'tz',\n            name: 'Системное программирование',\n            url: 'https://localhost:1880/subject?name=Системное%20программирование'\n        },\n        {\n            type: 'chat',\n            name: 'Системное программирование | Чат',\n            chatname: 'Системное программирование'\n        },\n        {\n            type: 'tz',\n            name: 'Системы искусственного интеллекта',\n            url: 'https://localhost:1880/subject?name=Системы%20искусственного%20интеллекта'\n        },\n        {\n            type: 'chat',\n            name: 'Системы искусственного интеллекта | Чат',\n            chatname: 'Системы искусственного интеллекта'\n        },\n        {\n            type: 'tz',\n            name: 'Технологии проектирования',\n            url: 'https://localhost:1880/subject?name=Технологии%20проектирования'\n        }\n    ];\n\n    function displayDialogs(dialogsToDisplay) {\n        dialogList.innerHTML = '';\n\n        dialogsToDisplay.forEach(dialog => {\n            const li = document.createElement('li');\n            li.classList.add('dialog-item');\n            li.dataset.type = dialog.type;\n            li.dataset.name = dialog.name;\n\n            let iconText = '';\n            let iconClass = '';\n\n            if (dialog.type === 'tz') {\n                iconText = 'ТЗ';\n                iconClass = 'tz';\n                li.addEventListener('click', () => {\n                    stopAutoRefresh();\n                    window.location.href = dialog.url;\n                });\n            } else if (dialog.type === 'chat') {\n                iconText = '<i class=\"fas fa-users\"></i>';\n                iconClass = 'chat';\n                li.addEventListener('click', () => {\n                    if (currentChat !== dialog.chatname) {\n                        stopAutoRefresh();\n                        currentChat = dialog.chatname;\n                        displayChat(dialog.name);\n                        loadChatMessages(dialog.chatname);\n                        startAutoRefresh();\n                    }\n                });\n            }\n\n            li.innerHTML = `\n                <div class=\"dialog-icon ${iconClass}\">${iconText}</div>\n                <div class=\"dialog-text\">${dialog.name}</div>\n            `;\n\n            dialogList.appendChild(li);\n        });\n    }\n\n    function stopAutoRefresh() {\n        if (refreshInterval) {\n            clearInterval(refreshInterval);\n            refreshInterval = null;\n        }\n    }\n\n    function startAutoRefresh() {\n        stopAutoRefresh(); // Остановить предыдущий интервал, если был\n        refreshInterval = setInterval(() => {\n            if (currentChat) {\n                loadChatMessages(currentChat);\n            }\n        }, 3000); // Обновление каждые 3 секунды\n    }\n\n    function displayChat(chatName) {\n        chatView.querySelector('h3').textContent = chatName;\n        chatView.classList.add('active');\n    }\n\n    function loadChatMessages(chatname) {\n        fetch(`/get-chat-messages?chatname=${encodeURIComponent(chatname)}`)\n            .then(response => response.json())\n            .then(messages => {\n                renderMessages(messages);\n            })\n            .catch(error => {\n                console.error('Ошибка при загрузке сообщений:', error);\n            });\n    }\n\n    function renderMessages(messages) {\n        // Всегда очищаем чат перед рендерингом\n        chatMessages.innerHTML = '';\n\n        if (!messages || messages.length === 0) {\n            // Показываем \"Нет сообщений\" только если чат действительно пуст\n            // и это не результат только что отправленного сообщения\n            if (!messageInput.value.trim()) { // Проверяем, что мы не в процессе отправки\n                chatMessages.innerHTML = '<div class=\"message\">Нет сообщений</div>';\n            }\n            return;\n        }\n\n        messages.forEach(message => {\n            const messageDiv = document.createElement('div');\n            messageDiv.classList.add('message');\n\n            if (message.gruppa === 'teacher') {\n                messageDiv.classList.add('teacher-message');\n            }\n        \n            messageDiv.innerHTML = `\n                <strong>${message.username}</strong>:\n                ${message.text}\n                <div class=\"message-time\">${new Date(message.created_at).toLocaleTimeString()}</div>\n            `;\n            chatMessages.appendChild(messageDiv);\n        });\n\n        chatMessages.scrollTop = chatMessages.scrollHeight;\n    }\n\n    function sendMessage() {\n        const text = messageInput.value.trim();\n        if (!text || !currentChat) return;\n\n        fetch('/send-message', {\n            method: 'POST',\n            headers: {\n                'Content-Type': 'application/json',\n            },\n            body: JSON.stringify({\n                chatname: currentChat,\n                text: text\n            })\n        })\n        .then(response => {\n            if (response.ok) {\n                messageInput.value = '';\n                // Принудительно очищаем чат перед загрузкой новых сообщений\n                chatMessages.innerHTML = '';\n                loadChatMessages(currentChat);\n            }\n        })\n        .catch(error => {\n            console.error('Ошибка при отправке сообщения:', error);\n        });\n    }\n\n    searchBar.addEventListener('input', function (e) {\n        const searchTerm = e.target.value.toLowerCase();\n        const filteredDialogs = dialogs.filter(dialog => {\n            return dialog.name.toLowerCase().includes(searchTerm);\n        });\n        displayDialogs(filteredDialogs);\n    });\n\n    sendButton.addEventListener('click', sendMessage);\n    messageInput.addEventListener('keypress', function (e) {\n        if (e.key === 'Enter') {\n            sendMessage();\n        }\n    });\n\n    displayDialogs(dialogs);\n});\n</script>\n<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css\" integrity=\"sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />\n</body>\n</html>\n",
+        "output": "str",
+        "x": 920,
+        "y": 80,
+        "wires": [
+            [
+                "f867e8a8395f63a4"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "f867e8a8395f63a4",
+        "type": "http response",
+        "z": "8cd62b9679ad11ce",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1130,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "896a12680931337c",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "Проверка авторизации",
+        "func": "// Проверяем куки\nif (!msg.req.cookies || !msg.req.cookies.auth_token) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\n// Получаем ID пользователя из куки\nconst userId = msg.req.cookies.user_id;\nif (!userId) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\nmsg.topic = `SELECT role, username FROM users WHERE id = '${userId}'`;\nmsg.userId = userId;\n// Здесь можно добавить проверку валидности токена\n// Например, сравнить с хранящимся в памяти или БД\n\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "5cae1dc872a4769e"
+            ],
+            [
+                "f867e8a8395f63a4"
+            ]
+        ]
+    },
+    {
+        "id": "78f98ed8537f4b31",
+        "type": "inject",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Инициализация БД",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "0.1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 360,
+        "wires": [
+            [
+                "7a89d7535010efb2"
+            ]
+        ]
+    },
+    {
+        "id": "7a89d7535010efb2",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Создать таблицу messages",
+        "func": "// Создаем таблицу сообщений, если она не существует\nconst sql = `CREATE TABLE IF NOT EXISTS messages (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    chatname TEXT NOT NULL,\n    username TEXT NOT NULL,\n    text TEXT NOT NULL,\n    gruppa TEXT NOT NULL,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n)`;\n\nmsg.topic = sql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 360,
+        "wires": [
+            [
+                "36386a2733d98b70"
+            ]
+        ]
+    },
+    {
+        "id": "36386a2733d98b70",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "mydb": "d3f44785a6cfb327",
+        "sql": "",
+        "name": "SQLite DB",
+        "x": 750,
+        "y": 360,
+        "wires": [
+            [
+                "ed89fe60e9d7c467"
+            ]
+        ]
+    },
+    {
+        "id": "ed89fe60e9d7c467",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "28dae3d0cb6655d8",
+        "type": "inject",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Вывод таблиц БД",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "SELECT name FROM sqlite_master WHERE type='table';",
+        "x": 250,
+        "y": 420,
+        "wires": [
+            [
+                "31f240fb5e34c6ec"
+            ]
+        ]
+    },
+    {
+        "id": "a031472365e48814",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "31f240fb5e34c6ec",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "SQLite DB",
+        "x": 490,
+        "y": 420,
+        "wires": [
+            [
+                "a031472365e48814"
+            ]
+        ]
+    },
+    {
+        "id": "c4ce28bbe2d59123",
+        "type": "inject",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Вывод сообщений",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 250,
+        "y": 480,
+        "wires": [
+            [
+                "bbb778ecb3facdf4"
+            ]
+        ]
+    },
+    {
+        "id": "57d2671daa8fefc1",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "все сообщения",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "bbb778ecb3facdf4",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "fixed",
+        "sql": "select * from messages",
+        "name": "SQLite DB",
+        "x": 490,
+        "y": 480,
+        "wires": [
+            [
+                "57d2671daa8fefc1"
+            ]
+        ]
+    },
+    {
+        "id": "36e9e80567617f4d",
+        "type": "inject",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Создание сообшения",
+        "props": [
+            {
+                "p": "msg.payload.chatname",
+                "v": "Системы искусственного интеллекта",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.username",
+                "v": "Солдатова Ольга Петровна",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.gruppa",
+                "v": "teacher",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.text",
+                "v": "Экзамен завтра в 16:00",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 260,
+        "y": 540,
+        "wires": [
+            [
+                "b46a07e5bed22e6c"
+            ]
+        ]
+    },
+    {
+        "id": "b46a07e5bed22e6c",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "ввод данных",
+        "func": "const insertSql = `INSERT INTO events (chatname, username, text, gruppa) VALUES ('${msg.payload.chatname}', '${msg.payload.username}', '${msg.payload.text}', '${msg.payload.gruppa}')`;\nmsg.topic = insertSql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 540,
+        "wires": [
+            [
+                "6615d5887534ac85"
+            ]
+        ]
+    },
+    {
+        "id": "6615d5887534ac85",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "",
+        "x": 770,
+        "y": 540,
+        "wires": [
+            [
+                "66a4d0f8b9d0badf"
+            ]
+        ]
+    },
+    {
+        "id": "66a4d0f8b9d0badf",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "dfb926319df5112a",
+        "type": "inject",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Удалить из БД",
+        "props": [
+            {
+                "p": "topic.date",
+                "v": "2025-05-20",
+                "vt": "str"
+            },
+            {
+                "p": "topic.time",
+                "v": "09:45 - 11:20",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 240,
+        "y": 600,
+        "wires": [
+            [
+                "dc52fc295be87803"
+            ]
+        ]
+    },
+    {
+        "id": "dc52fc295be87803",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Команда",
+        "func": "if (msg.topic == \"all\") {\n    msg.topic = \"DELETE FROM messages\";\n}\nelse if (msg.topic){//удалить по id\n    msg.topic = `DELETE FROM messages WHERE id = '${msg.topic.id}'`;\n}\nelse {\n    msg.topic = \"SELECT 'msg.topic пуст' AS text\";\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 600,
+        "wires": [
+            [
+                "d1204b1faf51d6c4"
+            ]
+        ]
+    },
+    {
+        "id": "a63b5d1a5f774d98",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "d1204b1faf51d6c4",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "DELETE FROM hourly_stats",
+        "name": "",
+        "x": 770,
+        "y": 600,
+        "wires": [
+            [
+                "a63b5d1a5f774d98"
+            ]
+        ]
+    },
+    {
+        "id": "954ccfcc18f82b4e",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Команда",
+        "func": "const insertSql = `SELECT * FROM messages WHERE chatname = '${msg.payload.chatname}'`;\nmsg.topic = insertSql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 660,
+        "wires": [
+            [
+                "1568bd5286e59760"
+            ]
+        ]
+    },
+    {
+        "id": "16aed3ba96a53f69",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "1568bd5286e59760",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "DELETE FROM hourly_stats",
+        "name": "",
+        "x": 770,
+        "y": 660,
+        "wires": [
+            [
+                "16aed3ba96a53f69"
+            ]
+        ]
+    },
+    {
+        "id": "f21aaa2a0d85371c",
+        "type": "inject",
+        "z": "8cd62b9679ad11ce",
+        "g": "a9b84b854e281eb5",
+        "name": "Найти сообщение",
+        "props": [
+            {
+                "p": "msg.payload.date",
+                "v": "2025-05-20",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.time",
+                "v": "09:45 - 11:20",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 250,
+        "y": 660,
+        "wires": [
+            [
+                "954ccfcc18f82b4e"
+            ]
+        ]
+    },
+    {
+        "id": "8accc27ec328375d",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "css",
+        "func": "var css = `\nbody {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 0;\n            height: 1200px;\n            background-color: #edf3fec1;\n        }\n\n        .topbar {\n            position: fixed;\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 80px;\n            background-color: #fff;\n            color: white;\n            display: flex;\n            align-items: center;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding-left: 20px;\n            z-index: 1;\n        }\n\n\n        .sidebar {\n            width: 45px;\n            height: 100%;\n            background-color: #fff;\n            color: white;\n            position: fixed;\n            top: 0;\n            left: 0;\n            transition: width 0.3s;\n            overflow: visible;\n            white-space: nowrap;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 10px;\n            z-index: 10;\n        }\n\n        .sidebar.expanded1 {\n            width: 340px;\n            transition: width 0.7s ease;\n        }\n\n        .sidebar:hover {\n            width: 340px;\n            transition: width 0.7s ease;\n        }\n\n        .toggle-btn {\n            cursor: pointer;\n            text-align: center;\n            padding: 10px;\n            background-color: #EDF3FE;\n            border: none;\n            color: white;\n            width: 33px;\n            height: 33px;\n            border-radius: 50%;\n            outline: none;\n            position: absolute;\n            left: 82%;\n            top: 40px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 10px;\n        }\n\n        .toggle-btn.expanded1 {\n            transform: rotate(180deg);\n        }\n\n        .toggle-btn img {\n            width: 100%;\n            height: 100%;\n            object-fit: contain;\n            display: block;\n            transition: transform 0.2s ease;\n        }\n\n        .button-list {\n            list-style-type: none;\n            padding: 0;\n            margin: 0;\n        }\n\n        .button-list li {\n            display: flex;\n            align-items: center;\n            padding: 10px;\n        }\n\n        .button-list li img {\n            width: 24px;\n            height: 24px;\n            margin-right: 10px;\n        }\n\n        .button-list li:hover {\n            background-color: #555;\n        }\n\n        .text {\n            display: none;\n        }\n\n        .sidebar.expanded .text {\n            display: inline;\n        }\n\n        .sidebar:hover .text {\n            display: inline;\n        }\n\n        .logo {\n            width: 30px;\n            height: auto;\n            left: 84%;\n        }\n\n        .logo.small {\n            width: 300px;\n            height: auto;\n            transition: width 0.5s ease;\n        }\n\n        .logocenter {\n            border: 5px solid;\n            position: absolute;\n            top: 45px;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            padding: 10px;\n        }\n\n        .logocenter.small {\n            border: 6px solid;\n            position: absolute;\n            top: 110px;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            padding: 10px;\n        }\n\n        .logoname {\n            width: 230px;\n            height: auto;\n        }\n\n        .divlogoname {\n            height: auto;\n            position: absolute;\n            top: 20px;\n            left: 80px;\n            padding: 10px;\n        }\n\n        .menu {\n            list-style: none;\n            position: absolute;\n            color: black;\n            top: 60px;\n            width: 95%;\n            padding: 0;\n            margin: 40px 0 0 0;\n            transition: transform 0.7s ease;\n        }\n\n        .menu.small {\n            list-style: none;\n            position: absolute;\n            color: black;\n            top: 170px;\n            width: 95%;\n            padding: 0;\n            margin: 40px 0 0 0;\n        }\n\n        .menu li {\n            display: flex;\n            align-items: center;\n            padding: 12px;\n            cursor: pointer;\n            transition: background 0.6s;\n        }\n\n        .menu li:hover {\n            background: #EDF3FE;\n        }\n\n        .icon {\n            width: 24px;\n            height: 24px;\n            margin-right: 40px;\n        }\n\n        .text {\n            display: inline-block;\n            opacity: 0;\n            transition: opacity 0.3s ease 0.8s;\n            font-size: 18px;\n        }\n\n        .sidebar:not(.expanded1) .menu li,\n        .sidebar:hover:not(.expanded1) .menu li {\n            justify-content: left;\n        }\n\n        .sidebar:not(.expanded1) .text {\n            opacity: 0;\n            visibility: hidden;\n        }\n\n        .sidebar.expanded1 .menu li,\n        .sidebar:hover .menu li {\n\n            ustify-content: flex-start;\n            padding-left: 5px;\n        }\n\n        .sidebar.expanded1 .text,\n        .sidebar:hover .text {\n            opacity: 1;\n            visibility: visible;\n            transition-delay: 0.8s;\n        }\n\n        .main_content {\n            top: 105px;\n            position: relative;\n            color: black;\n            margin-top: 10px;\n            margin-left: 100px;\n            padding: 2px;\n            transition: margin-left 0.3s ease;\n        }\n\n        .sidebar.expanded1~.main_content {\n            margin-left: 400px;\n        }\n\n        .info-box {\n            text-align: center;\n        }\n\n        .info-label {\n            margin-bottom: 10px;\n            font-size: 18px;\n            font-weight: bold;\n        }\n\n        .info-rectangle {\n            width: 98%;\n            padding-right: -100px;\n            background-color: #fcfcfc;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            border-radius: 10px;\n        }\n\n        .table {\n            display: grid;\n            padding: 5px;\n            grid-template-columns: 6.5vw 1fr 1fr 1fr 1fr 1fr 1fr;\n            gap: 5px;\n        }\n\n        .row {\n            display: contents;\n        }\n\n        .cell {\n            background: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            min-height: 30px;\n            text-align: left;\n        }\n\n        .header-row .cell {\n            background: #EDF3FE;\n            font-weight: bold;\n            text-align: center;\n        }\n\n        .time {\n            font-weight: bold;\n            background: #EDF3FE;\n            padding: 20px;\n        }\n\n        .subject a {\n            color: blue;\n            text-decoration: none;\n        }\n\n        .subject {\n            cursor: pointer;\n            background-color: #fff;\n            font-size: 14px;\n            line-height: 1.4;\n            transition: background-color 0.3s;\n        }\n\n        .subject:hover {\n            background-color: #dee7f9c8\n        }\n\n        .green {\n            border-left: 5px solid green;\n        }\n\n        .blue {\n            border-left: 5px solid rgb(0, 68, 255);\n        }\n\n        .purple {\n            border-left: 5px solid purple;\n        }\n\n        .cyan {\n            border-left: 5px solid rgb(17, 4, 90);\n        }\n\n        .info-subject {\n            margin-bottom: 10px;\n            font-size: 30px;\n            font-weight: bold;\n        }\n\n        .task_info_table {\n            display: grid;\n            padding: 6px;\n            grid-template-columns: 1fr 3fr;\n            gap: 5px;\n        }\n\n        .task_state {\n            min-height: 150px;\n            min-width: 200px;\n            background: #EDF3FE;\n            padding: 20px;\n            transition: all 0.3s ease;\n        }\n\n        .task_table {\n            display: grid;\n            min-width: 360px;\n            background: #EDF3FE;\n            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;\n            gap: 5px;\n        }\n\n        @media (max-width: 2300px) {\n            .task_table {\n                grid-template-columns: 1fr 1fr 1fr 1fr;\n            }\n        }\n\n        @media (max-width: 1500px) {\n            .task_table {\n                grid-template-columns: 1fr 1fr 1fr;\n            }\n\n            .task_state {\n                min-width: 300px;\n            }\n        }\n\n        @media (max-width: 1000px) {\n            .task_table {\n                grid-template-columns: 1fr 1fr;\n            }\n        }\n\n        @media (max-width: 900px) {\n            .task_table {\n                grid-template-columns: 1fr;\n                min-width: 200px;\n            }\n        }\n\n        @media (max-width: 810px) {\n            .task_info_table {\n                grid-template-columns: 1fr;\n            }\n        }\n\n        .task {\n            background: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            min-height: 50px;\n            text-align: left;\n        }\n\n        .teacher-card {\n            background: white;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 20px;\n            max-width: 500px;\n            margin: 0 auto;\n        }\n\n        .teacher-title {\n            font-size: 18px;\n            font-weight: bold;\n            text-align: left;\n            margin: 0 0 15px 0;\n            padding-left: 10px;\n        }\n\n        .teacher-info {\n            display: flex;\n            align-items: center;\n            justify-content: flex-start;\n        }\n\n        .teacher-photo {\n            width: 100px;\n            height: 100px;\n            border-radius: 50%;\n            object-fit: cover;\n            margin-right: 20px;\n        }\n\n        .teacher-details {\n            flex: 1;\n            text-align: left;\n        }\n\n        .teacher-details p {\n            margin: 5px 0;\n        }\n\n        .msg-button {\n            margin-top: 10px;\n            background-color: #0017e2;\n            color: white;\n            border: none;\n            padding: 10px 20px;\n            border-radius: 8px;\n            cursor: pointer;\n            font-size: 14px;\n        }\n\n        .msg-button:hover {\n            background-color: #3054b8;\n        }\n\n        .hidden {\n            display: none;\n        }\n\n        .lab-details {\n            background: white;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 20px;\n            max-width: 500px;\n            margin: 0 auto;\n        }\n\n        .lab-comment {\n            padding: 20px;\n        }\n\n        .task-status {\n            font-size: 14px;\n            color: #f00;\n            /* или другой цвет */\n            margin-top: 8px;\n        }\n\n        /* Новый блок с заданием */\n        .assignment-details {\n            margin-top: 20px;\n        }\n\n        .assignment-details .info-rectangle {\n            background: #EDF3FE;\n            border-radius: 10px;\n            padding: 20px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n        }\n\n        /* Прогресс-бар (если не добавлены ранее) */\n        .progress-container {\n            background-color: #f3f3f3;\n            border-radius: 8px;\n            height: 10px;\n            width: 100%;\n            overflow: hidden;\n            margin-top: 10px;\n        }\n\n        .progress-bar {\n            height: 100%;\n            background-color: #4caf50;\n            transition: width 1s ease;\n        }\n\n        .add-button {\n            position: absolute;\n            right: 5px;\n            bottom: 5px;\n            width: 24px;\n            height: 24px;\n            border: none;\n            border-radius: 50%;\n            background-color: #edf3fe;\n            color: #000;\n            font-weight: bold;\n            cursor: pointer;\n            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);\n            display: none;\n        }\n\n        .cell:hover .add-button {\n            display: block;\n        }\n\n        .modal {\n            display: none;\n            position: fixed;\n            top: 20%;\n            left: 50%;\n            transform: translateX(-50%);\n            background: white;\n            padding: 20px;\n            z-index: 100;\n            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n            border-radius: 10px;\n        }\n        .message {\n            padding: 8px 12px;\n            margin-bottom: 10px;\n            border-radius: 5px;\n            background-color: #f0f0f0;\n            word-wrap: break-word;\n        }\n\n        .message strong {\n            color: #0D47A1;\n        }\n\n        .message-time {\n            font-size: 0.8em;\n            color: #666;\n            margin-top: 3px;\n            text-align: right;\n        }\n\n        .chat-messages {\n            height: 400px;\n            overflow-y: auto;\n            padding: 10px;\n            border: 1px solid #ddd;\n            margin-bottom: 10px;\n            background-color: #fff;\n            border-radius: 5px;\n        }\n        /* Сообщения преподавателей */\n        .teacher-message {\n            background-color: #FFE0B2; /* Оранжевый фон */\n            border-left: 3px solid #FF9800; /* Оранжевая полоса слева */\n        }\n\n        .message {\n            padding: 8px 12px;\n            margin-bottom: 10px;\n            border-radius: 5px;\n            background-color: #f0f0f0;\n            word-wrap: break-word;\n            position: relative;\n        }\n\n        .message strong {\n            color: #0D47A1;\n        }\n\n        .message-time {\n            font-size: 0.8em;\n            color: #666;\n            margin-top: 3px;\n            text-align: right;\n        }\n`;\n\nmsg.cssText = css;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 180,
+        "wires": [
+            [
+                "9647228e347af4de"
+            ]
+        ]
+    },
+    {
+        "id": "d28322e8826f5460",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "получение роли",
+        "func": "// Проверяем, что получили роль пользователя\nif (!msg.payload || msg.payload.length === 0) {\n    node.error(\"Не удалось получить роль пользователя\", msg);\n    return [null, msg];\n}\n\nconst userRole = msg.payload[0].role;\nconst userName = msg.payload[0].username;\nmsg.userRole = userRole;\nmsg.userName = userName;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 180,
+        "wires": [
+            [
+                "8accc27ec328375d"
+            ]
+        ]
+    },
+    {
+        "id": "5cae1dc872a4769e",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "select * from events",
+        "name": "SQLite DB",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "d28322e8826f5460"
+            ]
+        ]
+    },
+    {
+        "id": "0afab019420edc5a",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "http-in-chat-messages",
+        "type": "http in",
+        "z": "8cd62b9679ad11ce",
+        "name": "Получить сообщения чата",
+        "url": "/get-chat-messages",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 400,
+        "y": 800,
+        "wires": [
+            [
+                "function-get-chat-messages"
+            ]
+        ]
+    },
+    {
+        "id": "http-in-send-message",
+        "type": "http in",
+        "z": "8cd62b9679ad11ce",
+        "name": "Отправить сообщение",
+        "url": "/send-message",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 860,
+        "wires": [
+            [
+                "815d85a6c228298b"
+            ]
+        ]
+    },
+    {
+        "id": "function-get-chat-messages",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "Получить сообщения чата",
+        "func": "const chatname = msg.req.query.chatname;\nmsg.topic = `SELECT *, datetime(created_at, 'localtime') as created_at FROM messages WHERE chatname = '${chatname}' ORDER BY created_at ASC`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 800,
+        "wires": [
+            [
+                "sqlite-get-messages"
+            ]
+        ]
+    },
+    {
+        "id": "function-send-message",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "Отправить сообщение",
+        "func": "\nconst chatname = msg.req.body.chatname;\nconst text = msg.req.body.text;\nconst username = msg.userName || 'Аноним';\nconst gruppa = msg.userRole || 'student';\n\nmsg.topic = `INSERT INTO messages (chatname, username, text, gruppa) VALUES ('${chatname}', '${username}', '${text}', '${gruppa}')`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 860,
+        "wires": [
+            [
+                "sqlite-insert-message",
+                "http-response-send-message"
+            ]
+        ]
+    },
+    {
+        "id": "sqlite-get-messages",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "SQLite DB",
+        "x": 1110,
+        "y": 800,
+        "wires": [
+            [
+                "http-response-chat-messages"
+            ]
+        ]
+    },
+    {
+        "id": "sqlite-insert-message",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "SQLite DB",
+        "x": 930,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "http-response-chat-messages",
+        "type": "http response",
+        "z": "8cd62b9679ad11ce",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1430,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "http-response-send-message",
+        "type": "http response",
+        "z": "8cd62b9679ad11ce",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1440,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "06f16478c1bbcc94",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "d5aabec248b40f0c",
+        "type": "debug",
+        "z": "8cd62b9679ad11ce",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "815d85a6c228298b",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "Отправить сообщение",
+        "func": "// Получаем ID пользователя из куки\nconst userId = msg.req.cookies.user_id;\nif (!userId) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\nmsg.topic = `SELECT role, username FROM users WHERE id = '${userId}'`;\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 940,
+        "wires": [
+            [
+                "0557e0b68672f31f"
+            ]
+        ]
+    },
+    {
+        "id": "937fa9c88c95ae53",
+        "type": "function",
+        "z": "8cd62b9679ad11ce",
+        "name": "получение роли",
+        "func": "// Проверяем, что получили роль пользователя\nif (!msg.payload || msg.payload.length === 0) {\n    node.error(\"Не удалось получить роль пользователя\", msg);\n    return [null, msg];\n}\n\nconst userRole = msg.payload[0].role;\nconst userName = msg.payload[0].username;\nmsg.userRole = userRole;\nmsg.userName = userName;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1040,
+        "wires": [
+            [
+                "function-send-message"
+            ]
+        ]
+    },
+    {
+        "id": "0557e0b68672f31f",
+        "type": "sqlite",
+        "z": "8cd62b9679ad11ce",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "select * from events",
+        "name": "SQLite DB",
+        "x": 230,
+        "y": 1040,
+        "wires": [
+            [
+                "937fa9c88c95ae53"
+            ]
+        ]
+    },
+    {
+        "id": "d3f44785a6cfb327",
+        "type": "sqlitedb",
+        "db": "C:\\sqlite\\myusersdb.db",
+        "mode": "RWC"
+    }
+]

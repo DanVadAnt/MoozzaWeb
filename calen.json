@@ -1,0 +1,1058 @@
+[
+    {
+        "id": "b8ad15e59845239e",
+        "type": "tab",
+        "label": "Расписание",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6cebdc9467483554",
+        "type": "group",
+        "z": "b8ad15e59845239e",
+        "name": "Работа с бд",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "ef7a5da9587957db",
+            "0ad1669754d81440",
+            "c670a2a0e1a147cd",
+            "506a261d3026523f",
+            "4435b9b11e8bb8df",
+            "521a5e7271fcb269",
+            "c0f3b2afb792826c",
+            "0a156d769dc90c6e",
+            "86716a0157a63135",
+            "e830fc36391e8aca",
+            "f90b46636f0f5855",
+            "d07dc257cc2e7b34",
+            "ade0f032a5d1969d",
+            "30f9663de217782b",
+            "cbaffe357d4b92cc",
+            "4d9fdba8846ce6c9",
+            "7b8d6d98e2cc821c",
+            "5d7b2b3a65369fd3",
+            "45113b6952cab182",
+            "191d03ab4cc2074e",
+            "d2ce509bad35943e",
+            "caf2fa8abd83d2c3"
+        ],
+        "x": 414,
+        "y": 559,
+        "w": 972,
+        "h": 382
+    },
+    {
+        "id": "775516f75b5da7cc",
+        "type": "http in",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "url": "/ssau",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "6ed544fd13ce011c"
+            ]
+        ]
+    },
+    {
+        "id": "8269f2a4a554d9e6",
+        "type": "template",
+        "z": "b8ad15e59845239e",
+        "name": "Внешний вид расписания",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"ru\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Система выполнения заданий</title>\n    <style>\n        {{{cssText}}}\n    </style>\n    <link rel=\"icon\" type=\"image/png\" href=\"https://cabinet.ssau.ru/asset/favicon.ico\">\n</head>\n\n<div class=\"modal\" id=\"eventModal\">\n    <h3>Добавить событие</h3>\n    <input type=\"text\" id=\"eventGruppa\" placeholder=\"Группа\">\n    <input type=\"text\" id=\"eventName\" placeholder=\"Предмет\">\n    <input type=\"text\" id=\"eventTeacher\" placeholder=\"Преподаватель\">\n    <input type=\"text\" id=\"eventRoom\" placeholder=\"Аудитория\">\n    <input type=\"text\" id=\"eventConference\" placeholder=\"Конференция\">\n    <input type=\"text\" id=\"eventPlatform\" placeholder=\"Платформа\">\n    <select id=\"eventType\">\n        <option value=\"Лекция\">Лекция</option>\n        <option value=\"Лабораторная\">Лабораторная</option>\n        <option value=\"Практика\">Практика</option>\n        <option value=\"Экзамен\">Экзамен</option>\n    </select>\n    <button onclick=\"saveEvent()\">ОК</button>\n    <button onclick=\"closeModal()\">Отмена</button>\n</div>\n\n<body>\n\n    <header class=\"topbar\">\n        <div class=\"divlogoname\"><img src=\"https://sun9-71.userapi.com/impg/5bKKjXmZHXD-py_TrIJPKFRQ7bS0QHjZuGtpmw/76Nc37KiTHI.jpg?size=1890x185&quality=95&sign=f3cefb5512a49c2d843e894fda497b97&type=album\" class=\"logoname\">\n        </div>\n    </header>\n\n    <div class=\"sidebar\" id=\"sidebar\">\n        <div class=\"logocenter\" id=\"logocenter\">\n            <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png\" class=\"logo\" id=\"logo\">\n        </div>\n        <button class=\"toggle-btn\" id=\"toggleBtn\">\n        <img src=\"https://github.com/Kulakov1Dima/SsauWorkspace/blob/main/hahaton_exemple_fronted/expand.png?raw=true\">\n    </button>\n        <ul class=\"menu\" id=\"menu\">\n            <li onclick=\"location.href='http://localhost:1880/mainprf';\" style=\"cursor:pointer;\">\n                <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/home1.png\" class=\"icon\">\n                <span class=\"text\">Главная</span>\n            </li>\n            <li onclick=\"location.href='http://localhost:1880/messenger';\" style=\"cursor:pointer;\">\n                <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/messenger.png\" class=\"icon\">\n                <span class=\"text\">Мессенджер</span>\n            </li>\n            <li onclick=\"location.href='http://localhost:1880/ssau';\" style=\"cursor:pointer;\">\n                <img src=\"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/schedule.png\" class=\"icon\">\n                <span class=\"text\">Расписание</span>\n            </li>\n            <li onclick=\"location.href='http://localhost:1880/logout';\" style=\"cursor:pointer;\">\n                <img src=\"https://sun9-72.userapi.com/impg/ISQCIKy3YIJnHpR2C05AvvdH7xc2frA4BH5HQw/DDx8APwc3Pg.jpg?size=67x66&quality=95&sign=93312bbe4606d61e6667decf46a421fa&type=album\" class=\"icon\">\n                <span class=\"text\">Выйти</span>\n            </li>\n        </ul>\n    </div>\n\n    <div class=\"main_content\">\n        <div>\n            <div class=\"info-label\"></div>\n            <div class=\"info-rectangle\">\n                <div class=\"table\" id=\"scheduleTable\">\n                    <div class=\"row header-row\" id=\"tableHeader\">\n                        <div class=\"cell time\">Время</div>\n                    </div>\n                </div>\n            </div>\n    \n            <!-- Измененный блок - теперь виден всегда (для студентов) -->\n            <div id=\"teacherScheduleContainer\" style=\"margin-top: 30px;\">\n                <!-- Добавляем условие отображения только для студентов -->\n                <div style=\"display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;\"\n                    id=\"teacherSelectorBlock\">\n                    <div style=\"display: flex; align-items: center;\">\n                        <span style=\"margin-right: 10px; font-weight: bold;\">Просмотр расписания преподавателя:</span>\n                        <select id=\"teacherSelector\" style=\"padding: 8px; border-radius: 5px; border: 1px solid #ddd;\">\n                            <option value=\"\">Выберите преподавателя</option>\n                        </select>\n                    </div>\n                    <div id=\"teacherWeekNavigation\" style=\"display: none;\">\n                        <button onclick=\"changeTeacherWeek(-1)\">←</button>\n                        <span id=\"teacherWeekLabel\" style=\"margin: 0 10px;\"></span>\n                        <button onclick=\"changeTeacherWeek(1)\">→</button>\n                    </div>\n                </div>\n                <div id=\"teacherScheduleTable\" class=\"info-rectangle\"></div>\n            </div>\n    </div>\n\n    <script>\n        const userRole = '{{userRole}}' || 'student';\n        const isTeacher = userRole === 'teacher';\n\n        const imagesToPreload = [\n            \"http://localhost:1880/logo_osnovnoy.png\",\n            \"https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png\"\n        ];\n        \n        imagesToPreload.forEach(src => {\n            const img = new Image();\n            img.src = src;\n        });\n        \n        const sidebar = document.getElementById('sidebar');\n        const toggleBtn = document.getElementById('toggleBtn');\n        const logo = document.getElementById('logo');\n        const logocenter = document.getElementById('logocenter');\n        const menu = document.getElementById('menu');\n        \n        toggleBtn.addEventListener('click', () => {\n            if (!toggleBtn.classList.contains('expanded1')) {\n                toggleBtn.classList.add('expanded1');\n                sidebar.classList.add('expanded1');\n            }\n            else{\n                toggleBtn.classList.remove('expanded1');\n                sidebar.classList.remove('expanded1');\n            }\n        });\n\n        sidebar.addEventListener('mouseenter', () => {\n            logo.src = 'http://localhost:1880/logo_osnovnoy.png';\n            logo.classList.add('small');\n            logocenter.classList.add('small');\n            menu.classList.add('small');\n        });\n\n        sidebar.addEventListener('mouseleave', () => {\n            if (!sidebar.classList.contains('expanded1')) {\n                logo.src = 'https://raw.githubusercontent.com/Kulakov1Dima/SsauWorkspace/refs/heads/main/hahaton_exemple_fronted/logo_osnovnoy_small.png';\n                logo.classList.remove('small');\n                logocenter.classList.remove('small');\n                menu.classList.remove('small');\n            }\n        });\n\n        let currentMonday = getMonday(new Date());\n\n        let currentTeacherWeek = getMonday(new Date());\n        \n        function changeTeacherWeek(offset) {\n            currentTeacherWeek.setDate(currentTeacherWeek.getDate() + offset * 7);\n            const selectedTeacher = document.getElementById('teacherSelector').value;\n            if (selectedTeacher) {\n                updateTeacherWeekLabel();\n                loadTeacherSchedule(selectedTeacher);\n            }\n        }\n        \n        function updateTeacherWeekLabel() {\n            const yearLabel = document.getElementById('teacherWeekLabel');\n            const year = currentTeacherWeek.getFullYear();\n            const nextYear = currentTeacherWeek.getMonth() >= 8 ? year + 1 : year;\n            yearLabel.textContent = `${nextYear - 1} / ${nextYear} учебный год`;\n        }\n\n        function getMonday(date) {\n            const d = new Date(date);\n            const day = d.getDay();\n            const diff = d.getDate() - ((day + 6) % 7);\n            d.setDate(diff);\n            d.setHours(0, 0, 0, 0);\n            return d;\n        }\n\n        function formatDate(date) {\n            const year = date.getFullYear();\n            const month = String(date.getMonth() + 1).padStart(2, '0');\n            const day = String(date.getDate()).padStart(2, '0');\n            return `${year}-${month}-${day}`;\n        }\n\n        function formatDisplayDate(date) {\n            return date.toLocaleDateString('ru-RU', {\n                day: '2-digit',\n                month: '2-digit',\n                year: '2-digit'\n            });\n        }\n\n        function updateYearLabel() {\n            const yearLabel = document.querySelector('.info-label');\n            const year = currentMonday.getFullYear();\n            const nextYear = currentMonday.getMonth() >= 8 ? year + 1 : year;\n        \n            yearLabel.innerHTML = `\n            <button onclick=\"changeWeek(-1)\">←</button>\n            ${nextYear - 1} / ${nextYear} учебный год\n            <button onclick=\"changeWeek(1)\">→</button>\n            `;\n        }\n\n        function changeWeek(offset) {\n            currentMonday.setDate(currentMonday.getDate() + offset * 7);\n            renderSchedule();\n        }\n\n        function closeModal() {\n            document.getElementById('eventModal').style.display = 'none';\n        }\n\n        function loadTeachersList() {\n            if (isTeacher) return;\n            \n            const selector = document.getElementById('teacherSelector');\n            selector.innerHTML = '<option value=\"\">Загрузка...</option>';\n            selector.disabled = true;\n\n        \n        fetch('http://localhost:1880/tea')\n        .then(response => {\n        if (!response.ok) throw new Error(`HTTP error ${response.status}`);\n        return response.json();\n        })\n        .then(data => {\n        console.log('Server response:', data); // Для отладки\n        \n        if (!Array.isArray(data)) {\n        throw new Error('Ожидался массив преподавателей');\n        }\n        \n        selector.innerHTML = '<option value=\"\">Выберите преподавателя</option>';\n        \n        if (data.length === 0) {\n        const option = document.createElement('option');\n        option.value = '';\n        option.textContent = 'Нет преподавателей в базе';\n        selector.appendChild(option);\n        return;\n        }\n        \n        // Сортировка по алфавиту\n        data.sort((a, b) => a.localeCompare(b));\n        \n        data.forEach(teacher => {\n        const option = document.createElement('option');\n        option.value = teacher;\n        option.textContent = teacher;\n        selector.appendChild(option);\n        });\n        })\n        .catch(error => {\n        console.error('Teacher list load failed:', error);\n        selector.innerHTML = '<option value=\"\">Ошибка загрузки</option>';\n        })\n        .finally(() => {\n        selector.disabled = false;\n        });\n        }\n\n        function loadTeacherSchedule(teacherName) {\n        const teacherScheduleContainer = document.getElementById('teacherScheduleContainer');\n        const teacherScheduleTable = document.getElementById('teacherScheduleTable');\n        const teacherWeekNavigation = document.getElementById('teacherWeekNavigation');\n        \n        if (!teacherName) {\n        teacherScheduleTable.style.display = 'none';\n        teacherWeekNavigation.style.display = 'none';\n        return;\n        }\n        \n        teacherScheduleTable.style.display = 'block';\n        teacherWeekNavigation.style.display = 'flex';\n        teacherScheduleTable.innerHTML = 'Загрузка...';\n        \n        updateTeacherWeekLabel();\n        \n        const startDate = formatDate(currentTeacherWeek);\n        const endDate = formatDate(new Date(currentTeacherWeek.getTime() + 6 * 24 * 60 * 60 * 1000));\n        \n        fetch(`http://localhost:1880/tea_schedule?teacher=${encodeURIComponent(teacherName)}&start=${startDate}&end=${endDate}`)\n        .then(response => response.json())\n        .then(data => {\n        renderTeacherSchedule(data, teacherName);\n        })\n        .catch(error => {\n        console.error(\"Ошибка получения данных расписания преподавателя:\", error);\n        teacherScheduleTable.innerHTML = 'Ошибка загрузки расписания';\n        });\n        }\n\n        // Функция для отрисовки расписания преподавателя\n        function renderTeacherSchedule(data, teacherName) {\n        const allTimes = [\n        \"08:00 - 09:35\",\n        \"09:45 - 11:20\",\n        \"11:30 - 13:05\",\n        \"13:30 - 15:05\",\n        \"15:15 - 16:50\"\n        ];\n        \n        const teacherScheduleTable = document.getElementById('teacherScheduleTable');\n        teacherScheduleTable.innerHTML = '';\n        \n        const table = document.createElement('div');\n        table.className = 'table';\n        \n        // Заголовок таблицы\n        const headerRow = document.createElement('div');\n        headerRow.className = 'row header-row';\n        headerRow.innerHTML = '<div class=\"cell time\">Время</div>';\n        \n        // Дни недели (6 штук)\n        const dayNames = [\"Понедельник\", \"Вторник\", \"Среда\", \"Четверг\", \"Пятница\", \"Суббота\"];\n        for (let i = 0; i < 6; i++) { const date=new Date(currentTeacherWeek.getTime()); date.setDate(date.getDate() + i); const\n            headerCell=document.createElement('div'); headerCell.className='cell' ; headerCell.innerHTML=`${dayNames[i]}<br>\n            ${formatDisplayDate(date)}`;\n            headerRow.appendChild(headerCell);\n            }\n        \n            table.appendChild(headerRow);\n        \n            // Для каждого временного слота — строка\n            allTimes.forEach(time => {\n            const row = document.createElement('div');\n            row.className = 'row';\n        \n            const timeCell = document.createElement('div');\n            timeCell.className = 'cell time';\n            timeCell.textContent = time;\n            row.appendChild(timeCell);\n        \n            // Для каждого дня недели — одна ячейка\n            for (let i = 0; i < 6; i++) { const dateObj=new Date(currentTeacherWeek.getTime());\n                dateObj.setDate(dateObj.getDate() + i); const dateStr=formatDate(dateObj); const\n                cell=document.createElement('div'); cell.className='cell' ; const event=data.find(ev=>\n                ev.date === dateStr &&\n                ev.time === time\n                );\n        \n                if (event) {\n                cell.classList.add('subject');\n                if (event.type === \"Лабораторная\") cell.classList.add('purple');\n                else if (event.type === \"Лекция\") cell.classList.add('green');\n                else if (event.type === \"Практика\") cell.classList.add('blue');\n                else if (event.type === \"Экзамен\") cell.classList.add('cyan');\n        \n                cell.innerHTML = `\n                <b>${event.name}</b><br>\n                <span>${event.gruppa}</span><br>\n                <span>${event.platform || event.room || ''}</span>\n                ${event.conference ? `<br><a href=\"${event.conference}\">Перейти в конференцию</a>` : ''}\n                `;\n                }\n        \n                row.appendChild(cell);\n                }\n        \n                table.appendChild(row);\n                });\n        \n                teacherScheduleTable.appendChild(table);\n                }function renderTeacherSchedule(data, teacherName) {\n                const allTimes = [\n                \"08:00 - 09:35\",\n                \"09:45 - 11:20\",\n                \"11:30 - 13:05\",\n                \"13:30 - 15:05\",\n                \"15:15 - 16:50\"\n                ];\n                \n                const teacherScheduleTable = document.getElementById('teacherScheduleTable');\n                teacherScheduleTable.innerHTML = '';\n                \n                const table = document.createElement('div');\n                table.className = 'table';\n                \n                // Заголовок таблицы\n                const headerRow = document.createElement('div');\n                headerRow.className = 'row header-row';\n                headerRow.innerHTML = '<div class=\"cell time\">Время</div>';\n                \n                // Дни недели (6 штук)\n                const dayNames = [\"Понедельник\", \"Вторник\", \"Среда\", \"Четверг\", \"Пятница\", \"Суббота\"];\n                for (let i = 0; i < 6; i++) { const date=new Date(currentTeacherWeek.getTime()); date.setDate(date.getDate() + i); const\n                    headerCell=document.createElement('div'); headerCell.className='cell' ; headerCell.innerHTML=`${dayNames[i]}<br>\n                    ${formatDisplayDate(date)}`;\n                    headerRow.appendChild(headerCell);\n                    }\n                \n                    table.appendChild(headerRow);\n                \n                    // Для каждого временного слота — строка\n                    allTimes.forEach(time => {\n                    const row = document.createElement('div');\n                    row.className = 'row';\n                \n                    const timeCell = document.createElement('div');\n                    timeCell.className = 'cell time';\n                    timeCell.textContent = time;\n                    row.appendChild(timeCell);\n                \n                    // Для каждого дня недели — одна ячейка\n                    for (let i = 0; i < 6; i++) { const dateObj=new Date(currentTeacherWeek.getTime());\n                        dateObj.setDate(dateObj.getDate() + i); const dateStr=formatDate(dateObj); const\n                        cell=document.createElement('div'); cell.className='cell' ; const event=data.find(ev=>\n                        ev.date === dateStr &&\n                        ev.time === time\n                        );\n                \n                        if (event) {\n                        cell.classList.add('subject');\n                        if (event.type === \"Лабораторная\") cell.classList.add('purple');\n                        else if (event.type === \"Лекция\") cell.classList.add('green');\n                        else if (event.type === \"Практика\") cell.classList.add('blue');\n                        else if (event.type === \"Экзамен\") cell.classList.add('cyan');\n                \n                        cell.innerHTML = `\n                        <b>${event.name}</b><br>\n                        <span>${event.gruppa}</span><br>\n                        <span>${event.platform || event.room || ''}</span>\n                        ${event.conference ? `<br><a href=\"${event.conference}\">Перейти в конференцию</a>` : ''}\n                        `;\n                        }\n                \n                        row.appendChild(cell);\n                        }\n                \n                        table.appendChild(row);\n                        });\n                \n                        teacherScheduleTable.appendChild(table);\n                        }\n\n    function renderSchedule() {\n    updateYearLabel();\n\n    const teacherSelectorBlock = document.getElementById('teacherSelectorBlock');\n    if (isTeacher) {\n    teacherSelectorBlock.style.display = 'none';\n    } else {\n    teacherSelectorBlock.style.display = 'flex';\n    }\n    \n    const allTimes = [\n    \"08:00 - 09:35\",\n    \"09:45 - 11:20\",\n    \"11:30 - 13:05\",\n    \"13:30 - 15:05\",\n    \"15:15 - 16:50\"\n    ];\n    \n    fetch('http://localhost:1880/schedule')\n    .then(response => response.json())\n    .then(data => {\n    const scheduleContainer = document.querySelector('.info-rectangle');\n    scheduleContainer.innerHTML = ''; // Очищаем контейнер\n    \n    if (isTeacher) {\n    // Для преподавателя - получаем список всех преподавателей и отображаем их расписание\n    fetch('http://localhost:1880/tea')\n    .then(response => response.json())\n    .then(teachers => {\n    teachers.forEach(teacher => {\n    // Создаем контейнер для таблицы преподавателя\n    const teacherContainer = document.createElement('div');\n    teacherContainer.className = 'teacher-schedule-container';\n    \n    // Добавляем заголовок с именем преподавателя\n    const teacherHeader = document.createElement('h3');\n    teacherHeader.textContent = teacher;\n    teacherHeader.style.marginTop = '20px';\n    teacherHeader.style.marginBottom = '10px';\n    teacherContainer.appendChild(teacherHeader);\n    \n    // Создаем таблицу для этого преподавателя\n    const table = document.createElement('div');\n    table.className = 'table';\n    \n    // Создаем заголовок таблицы\n    const headerRow = document.createElement('div');\n    headerRow.className = 'row header-row';\n    headerRow.innerHTML = '<div class=\"cell time\">Время</div>';\n    \n    // Дни недели (6 штук)\n    const days = [];\n    const dayNames = [\"Понедельник\", \"Вторник\", \"Среда\", \"Четверг\", \"Пятница\", \"Суббота\"];\n    for (let i = 0; i < 6; i++) { const date=new Date(currentMonday.getTime()); date.setDate(date.getDate() + i);\n        days.push(formatDate(date)); const headerCell=document.createElement('div'); headerCell.className='cell' ;\n        headerCell.innerHTML=`${dayNames[i]}<br>${formatDisplayDate(date)}`;\n        headerRow.appendChild(headerCell);\n        }\n    \n        table.appendChild(headerRow);\n    \n        // Для каждого временного слота — строка\n        allTimes.forEach(time => {\n        const row = document.createElement('div');\n        row.className = 'row';\n    \n        const timeCell = document.createElement('div');\n        timeCell.className = 'cell time';\n        timeCell.textContent = time;\n        row.appendChild(timeCell);\n    \n        // Для каждого дня недели — одна ячейка\n        for (let i = 0; i < 6; i++) { const dateObj=new Date(currentMonday.getTime()); dateObj.setDate(dateObj.getDate() +\n            i); const dateStr=formatDate(dateObj); const cell=document.createElement('div'); cell.className='cell' ; const\n            event=data.find(ev=>\n            ev.date === dateStr &&\n            ev.time === time &&\n            ev.teacher === teacher\n            );\n    \n            if (event) {\n            cell.classList.add('subject');\n            if (event.type === \"Лабораторная\") cell.classList.add('purple');\n            else if (event.type === \"Лекция\") cell.classList.add('green');\n            else if (event.type === \"Практика\") cell.classList.add('blue');\n            else if (event.type === \"Экзамен\") cell.classList.add('cyan');\n    \n            cell.innerHTML = `\n            <b>${event.name}</b><br>\n            <span>${event.gruppa}</span><br>\n            <span>${event.platform || event.room || ''}</span>\n            ${event.conference ? `<br><a href=\"${event.conference}\">Перейти в конференцию</a>` : ''}\n            `;\n            cell.setAttribute('data-subject', event.name);\n            cell.addEventListener('click', () => {\n            window.location.href = `subject?name=${encodeURIComponent(event.name)}`;\n            });\n            } else {\n            cell.style.position = 'relative';\n            const addButton = document.createElement('button');\n            addButton.textContent = '+';\n            addButton.className = 'add-button';\n            addButton.title = 'Добавить событие';\n            addButton.onclick = () => openAddModal(dateStr, time, teacher);\n            cell.appendChild(addButton);\n            }\n    \n            row.appendChild(cell);\n            }\n    \n            table.appendChild(row);\n            });\n    \n            teacherContainer.appendChild(table);\n            scheduleContainer.appendChild(teacherContainer);\n            });\n            });\n            } else {\n            // Для студента - обычное отображение\n            const table = document.createElement('div');\n            table.className = 'table';\n            table.id = 'scheduleTable';\n    \n            const headerRow = document.createElement('div');\n            headerRow.className = 'row header-row';\n            headerRow.innerHTML = '<div class=\"cell time\">Время</div>';\n    \n            // Дни недели (6 штук)\n            const days = [];\n            const dayNames = [\"Понедельник\", \"Вторник\", \"Среда\", \"Четверг\", \"Пятница\", \"Суббота\"];\n            for (let i = 0; i < 6; i++) { const date=new Date(currentMonday.getTime()); date.setDate(date.getDate() + i);\n                days.push(formatDate(date)); const headerCell=document.createElement('div'); headerCell.className='cell' ;\n                headerCell.innerHTML=`${dayNames[i]}<br>${formatDisplayDate(date)}`;\n                headerRow.appendChild(headerCell);\n                }\n    \n                table.appendChild(headerRow);\n    \n                // Для каждого временного слота — строка\n                allTimes.forEach(time => {\n                const row = document.createElement('div');\n                row.className = 'row';\n    \n                const timeCell = document.createElement('div');\n                timeCell.className = 'cell time';\n                timeCell.textContent = time;\n                row.appendChild(timeCell);\n    \n                // Для каждого дня недели — одна ячейка\n                for (let i = 0; i < 6; i++) { const dateObj=new Date(currentMonday.getTime());\n                    dateObj.setDate(dateObj.getDate() + i); const dateStr=formatDate(dateObj); const\n                    cell=document.createElement('div'); cell.className='cell' ; const event=data.find(ev=> ev.date ===\n                    dateStr && ev.time === time);\n                    if (event) {\n                    cell.classList.add('subject');\n                    if (event.type === \"Лабораторная\") cell.classList.add('purple');\n                    else if (event.type === \"Лекция\") cell.classList.add('green');\n                    else if (event.type === \"Практика\") cell.classList.add('blue');\n                    else if (event.type === \"Экзамен\") cell.classList.add('cyan');\n    \n                    cell.innerHTML = `\n                    <b>${event.name}</b><br>\n                    <span>${event.teacher}</span><br>\n                    <span>${event.platform || event.room || ''}</span>\n                    ${event.conference ? `<br><a href=\"${event.conference}\">Перейти в конференцию</a>` : ''}\n                    `;\n                    cell.setAttribute('data-subject', event.name);\n                    cell.addEventListener('click', () => {\n                    window.location.href = `subject?name=${encodeURIComponent(event.name)}`;\n                    });\n                    }\n    \n                    row.appendChild(cell);\n                    }\n    \n                    table.appendChild(row);\n                    });\n    \n                    scheduleContainer.appendChild(table);\n                    // Показываем контейнер выбора преподавателя только для студентов\n                    if (!isTeacher) {\n                        document.getElementById('teacherScheduleContainer').style.display = 'block';\n                        loadTeachersList();\n                    } else {\n                        document.getElementById('teacherScheduleContainer').style.display = 'none';\n                    }\n                    }\n                    })\n                    .catch(error => {\n                    console.error(\"Ошибка получения данных расписания:\", error);\n                    });\n    }\n\n    function openAddModal(date, time, teacher) {\n        const modal = document.getElementById('eventModal');\n        modal.style.display = 'block';\n        modal.setAttribute('data-date', date);\n        modal.setAttribute('data-time', time);\n        modal.setAttribute('data-teacher', teacher);\n        // Автозаполняем поле преподавателя\n        document.getElementById('eventTeacher').value = teacher;\n    }\n\n        function saveEvent() {\n        const gruppa = document.getElementById('eventGruppa').value.trim();\n        const name = document.getElementById('eventName').value.trim();\n        const teacher = document.getElementById('eventTeacher').value.trim();\n        const room = document.getElementById('eventRoom').value.trim();\n        const platform = document.getElementById('eventPlatform').value.trim();\n        const conference = document.getElementById('eventConference').value.trim();\n        const type = document.getElementById('eventType').value;\n        \n        const modal = document.getElementById('eventModal');\n        const date = modal.getAttribute('data-date');\n        const time = modal.getAttribute('data-time');\n        \n        if (!name || !teacher || !date || !time || !gruppa) {\n        alert(\"Пожалуйста, заполните все обязательные поля.\");\n        return;\n        }\n        \n        const newEvent = {\n        id: Math.floor(Date.now() / 1000),\n        gruppa: gruppa,\n        date: date,\n        time: time,\n        name: name,\n        teacher: teacher,\n        type: type,\n        room: room,\n        platform: platform,\n        conference: conference\n        };\n        \n        fetch('http://localhost:1880/schedule', {\n        method: 'POST',\n        headers: {\n        'Content-Type': 'application/json'\n        },\n        body: JSON.stringify(newEvent)\n        })\n        .then(() => {\n        closeModal();\n        renderSchedule();\n        })\n        .catch(error => {\n        alert(\"Ошибка при сохранении события: \" + error.message);\n        });\n        }\n\n        document.addEventListener('DOMContentLoaded', function() {\n            renderSchedule();\n            if (!isTeacher) {\n                loadTeachersList();\n            }\n            // Инициализация выпадающего списка\n            const teacherSelector = document.getElementById('teacherSelector');\n            teacherSelector.onchange = function() {\n            if (!isTeacher) { // Обрабатываем выбор только для студентов\n            loadTeacherSchedule(this.value);\n            }\n            };\n        });\n    </script>\n\n</body>\n\n</html>",
+        "output": "str",
+        "x": 820,
+        "y": 80,
+        "wires": [
+            [
+                "68bfdecb21634892"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "68bfdecb21634892",
+        "type": "http response",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1050,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "9b58ba8bc66a35cb",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "css",
+        "func": "var css = `\nbody {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 0;\n            height: 1200px;\n            background-color: #edf3fec1;\n        }\n\n        .topbar {\n            position: fixed;\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 80px;\n            background-color: #fff;\n            color: white;\n            display: flex;\n            align-items: center;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding-left: 20px;\n            z-index: 1;\n        }\n\n\n        .sidebar {\n            width: 45px;\n            height: 100%;\n            background-color: #fff;\n            color: white;\n            position: fixed;\n            top: 0;\n            left: 0;\n            transition: width 0.3s;\n            overflow: visible;\n            white-space: nowrap;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 10px;\n            z-index: 10;\n        }\n\n        .sidebar.expanded1 {\n            width: 340px;\n            transition: width 0.7s ease;\n        }\n\n        .sidebar:hover {\n            width: 340px;\n            transition: width 0.7s ease;\n        }\n\n        .toggle-btn {\n            cursor: pointer;\n            text-align: center;\n            padding: 10px;\n            background-color: #EDF3FE;\n            border: none;\n            color: white;\n            width: 33px;\n            height: 33px;\n            border-radius: 50%;\n            outline: none;\n            position: absolute;\n            left: 82%;\n            top: 40px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 10px;\n        }\n\n        .toggle-btn.expanded1 {\n            transform: rotate(180deg);\n        }\n\n        .toggle-btn img {\n            width: 100%;\n            height: 100%;\n            object-fit: contain;\n            display: block;\n            transition: transform 0.2s ease;\n        }\n\n        .button-list {\n            list-style-type: none;\n            padding: 0;\n            margin: 0;\n        }\n\n        .button-list li {\n            display: flex;\n            align-items: center;\n            padding: 10px;\n        }\n\n        .button-list li img {\n            width: 24px;\n            height: 24px;\n            margin-right: 10px;\n        }\n\n        .button-list li:hover {\n            background-color: #555;\n        }\n\n        .text {\n            display: none;\n        }\n\n        .sidebar.expanded .text {\n            display: inline;\n        }\n\n        .sidebar:hover .text {\n            display: inline;\n        }\n\n        .logo {\n            width: 30px;\n            height: auto;\n            left: 84%;\n        }\n\n        .logo.small {\n            width: 300px;\n            height: auto;\n            transition: width 0.5s ease;\n        }\n\n        .logocenter {\n            border: 5px solid;\n            position: absolute;\n            top: 45px;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            padding: 10px;\n        }\n\n        .logocenter.small {\n            border: 6px solid;\n            position: absolute;\n            top: 110px;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            padding: 10px;\n        }\n\n        .logoname {\n            width: 230px;\n            height: auto;\n        }\n\n        .divlogoname {\n            height: auto;\n            position: absolute;\n            top: 20px;\n            left: 80px;\n            padding: 10px;\n        }\n\n        .menu {\n            list-style: none;\n            position: absolute;\n            color: black;\n            top: 60px;\n            width: 95%;\n            padding: 0;\n            margin: 40px 0 0 0;\n            transition: transform 0.7s ease;\n        }\n\n        .menu.small {\n            list-style: none;\n            position: absolute;\n            color: black;\n            top: 170px;\n            width: 95%;\n            padding: 0;\n            margin: 40px 0 0 0;\n        }\n\n        .menu li {\n            display: flex;\n            align-items: center;\n            padding: 12px;\n            cursor: pointer;\n            transition: background 0.6s;\n        }\n\n        .menu li:hover {\n            background: #EDF3FE;\n        }\n\n        .icon {\n            width: 24px;\n            height: 24px;\n            margin-right: 40px;\n        }\n\n        .text {\n            display: inline-block;\n            opacity: 0;\n            transition: opacity 0.3s ease 0.8s;\n            font-size: 18px;\n        }\n\n        .sidebar:not(.expanded1) .menu li,\n        .sidebar:hover:not(.expanded1) .menu li {\n            justify-content: left;\n        }\n\n        .sidebar:not(.expanded1) .text {\n            opacity: 0;\n            visibility: hidden;\n        }\n\n        .sidebar.expanded1 .menu li,\n        .sidebar:hover .menu li {\n\n            ustify-content: flex-start;\n            padding-left: 5px;\n        }\n\n        .sidebar.expanded1 .text,\n        .sidebar:hover .text {\n            opacity: 1;\n            visibility: visible;\n            transition-delay: 0.8s;\n        }\n\n        .main_content {\n            top: 105px;\n            position: relative;\n            color: black;\n            margin-top: 10px;\n            margin-left: 100px;\n            padding: 2px;\n            transition: margin-left 0.3s ease;\n        }\n\n        .sidebar.expanded1~.main_content {\n            margin-left: 400px;\n        }\n\n        .info-box {\n            text-align: center;\n        }\n\n        .info-label {\n            margin-bottom: 10px;\n            font-size: 18px;\n            font-weight: bold;\n        }\n\n        .info-rectangle {\n            width: 98%;\n            padding-right: -100px;\n            background-color: #fcfcfc;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            border-radius: 10px;\n        }\n\n        .table {\n            display: grid;\n            padding: 5px;\n            grid-template-columns: 6.5vw 1fr 1fr 1fr 1fr 1fr 1fr;\n            gap: 5px;\n        }\n\n        .row {\n            display: contents;\n        }\n\n        .cell {\n            background: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            min-height: 30px;\n            text-align: left;\n        }\n\n        .header-row .cell {\n            background: #EDF3FE;\n            font-weight: bold;\n            text-align: center;\n        }\n\n        .time {\n            font-weight: bold;\n            background: #EDF3FE;\n            padding: 20px;\n        }\n\n        .subject a {\n            color: blue;\n            text-decoration: none;\n        }\n\n        .subject {\n            cursor: pointer;\n            background-color: #fff;\n            font-size: 14px;\n            line-height: 1.4;\n            transition: background-color 0.3s;\n        }\n\n        .subject:hover {\n            background-color: #dee7f9c8\n        }\n\n        .green {\n            border-left: 5px solid green;\n        }\n\n        .blue {\n            border-left: 5px solid rgb(0, 68, 255);\n        }\n\n        .purple {\n            border-left: 5px solid purple;\n        }\n\n        .cyan {\n            border-left: 5px solid rgb(17, 4, 90);\n        }\n\n        .info-subject {\n            margin-bottom: 10px;\n            font-size: 30px;\n            font-weight: bold;\n        }\n\n        .task_info_table {\n            display: grid;\n            padding: 6px;\n            grid-template-columns: 1fr 3fr;\n            gap: 5px;\n        }\n\n        .task_state {\n            min-height: 150px;\n            min-width: 200px;\n            background: #EDF3FE;\n            padding: 20px;\n            transition: all 0.3s ease;\n        }\n\n        .task_table {\n            display: grid;\n            min-width: 360px;\n            background: #EDF3FE;\n            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;\n            gap: 5px;\n        }\n\n        @media (max-width: 2300px) {\n            .task_table {\n                grid-template-columns: 1fr 1fr 1fr 1fr;\n            }\n        }\n\n        @media (max-width: 1500px) {\n            .task_table {\n                grid-template-columns: 1fr 1fr 1fr;\n            }\n\n            .task_state {\n                min-width: 300px;\n            }\n        }\n\n        @media (max-width: 1000px) {\n            .task_table {\n                grid-template-columns: 1fr 1fr;\n            }\n        }\n\n        @media (max-width: 900px) {\n            .task_table {\n                grid-template-columns: 1fr;\n                min-width: 200px;\n            }\n        }\n\n        @media (max-width: 810px) {\n            .task_info_table {\n                grid-template-columns: 1fr;\n            }\n        }\n\n        .task {\n            background: white;\n            padding: 20px;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            min-height: 50px;\n            text-align: left;\n        }\n\n        .teacher-card {\n            background: white;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 20px;\n            max-width: 500px;\n            margin: 0 auto;\n        }\n\n        .teacher-title {\n            font-size: 18px;\n            font-weight: bold;\n            text-align: left;\n            margin: 0 0 15px 0;\n            padding-left: 10px;\n        }\n\n        .teacher-info {\n            display: flex;\n            align-items: center;\n            justify-content: flex-start;\n        }\n\n        .teacher-photo {\n            width: 100px;\n            height: 100px;\n            border-radius: 50%;\n            object-fit: cover;\n            margin-right: 20px;\n        }\n\n        .teacher-details {\n            flex: 1;\n            text-align: left;\n        }\n\n        .teacher-details p {\n            margin: 5px 0;\n        }\n\n        .msg-button {\n            margin-top: 10px;\n            background-color: #0017e2;\n            color: white;\n            border: none;\n            padding: 10px 20px;\n            border-radius: 8px;\n            cursor: pointer;\n            font-size: 14px;\n        }\n\n        .msg-button:hover {\n            background-color: #3054b8;\n        }\n\n        .hidden {\n            display: none;\n        }\n\n        .lab-details {\n            background: white;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n            padding: 20px;\n            max-width: 500px;\n            margin: 0 auto;\n        }\n\n        .lab-comment {\n            padding: 20px;\n        }\n\n        .task-status {\n            font-size: 14px;\n            color: #f00;\n            /* или другой цвет */\n            margin-top: 8px;\n        }\n\n        /* Новый блок с заданием */\n        .assignment-details {\n            margin-top: 20px;\n        }\n\n        .assignment-details .info-rectangle {\n            background: #EDF3FE;\n            border-radius: 10px;\n            padding: 20px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n        }\n\n        /* Прогресс-бар (если не добавлены ранее) */\n        .progress-container {\n            background-color: #f3f3f3;\n            border-radius: 8px;\n            height: 10px;\n            width: 100%;\n            overflow: hidden;\n            margin-top: 10px;\n        }\n\n        .progress-bar {\n            height: 100%;\n            background-color: #4caf50;\n            transition: width 1s ease;\n        }\n\n        .add-button {\n            position: absolute;\n            right: 5px;\n            bottom: 5px;\n            width: 24px;\n            height: 24px;\n            border: none;\n            border-radius: 50%;\n            background-color: #edf3fe;\n            color: #000;\n            font-weight: bold;\n            cursor: pointer;\n            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);\n            display: none;\n        }\n\n        .cell:hover .add-button {\n            display: block;\n        }\n\n        .modal {\n            display: none;\n            position: fixed;\n            top: 20%;\n            left: 50%;\n            transform: translateX(-50%);\n            background: white;\n            padding: 20px;\n            z-index: 100;\n            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n            border-radius: 10px;\n        }\n        .teacher-schedule-container {\n            margin-bottom: 40px;\n            border: 1px solid #ddd;\n            border-radius: 10px;\n            padding: 15px;\n            background-color: white;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n        }   \n\n        .teacher-schedule-container h3 {\n            color: #333;\n            padding-bottom: 10px;\n            border-bottom: 1px solid #eee;\n            margin-top: 0;\n        }\n        .teacherScheduleContainer {\n            margin-top: 30px;\n            padding: 20px;\n            background-color: white;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(215, 225, 238, 0.736);\n        }\n\n        .teacherSelector {\n            padding: 8px 12px;\n            border-radius: 5px;\n            border: 1px solid #ddd;\n            background-color: #f9f9f9;\n            font-size: 14px;\n            min-width: 250px;\n        }\n        #teacherWeekNavigation button {\n            padding: 5px 10px;\n            border: 1px solid #ddd;\n            border-radius: 5px;\n            background-color: #f9f9f9;\n            cursor: pointer;\n            font-size: 14px;\n        }\n\n        #teacherWeekNavigation button:hover {\n            background-color: #EDF3FE;\n        }\n\n        #teacherWeekNavigation {\n            display: flex;\n            align-items: center;\n            gap: 10px;\n        }\n\n        #teacherWeekLabel {\n            font-weight: bold;\n            min-width: 150px;\n            text-align: center;\n        }\n`;\n\nmsg.cssText = css;\nmsg.userRole = msg.userRole;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 160,
+        "wires": [
+            [
+                "8269f2a4a554d9e6"
+            ]
+        ]
+    },
+    {
+        "id": "6ed544fd13ce011c",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "Проверка авторизации",
+        "func": "// Проверяем куки\nif (!msg.req.cookies || !msg.req.cookies.auth_token) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\n// Получаем ID пользователя из куки\nconst userId = msg.req.cookies.user_id;\nif (!userId) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\nmsg.topic = `SELECT role FROM users WHERE id = '${userId}'`;\nmsg.userId = userId;\n\n// Здесь можно добавить проверку валидности токена\n// Например, сравнить с хранящимся в памяти или БД\n\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 80,
+        "wires": [
+            [
+                "c867954ffcc849d8"
+            ],
+            [
+                "68bfdecb21634892"
+            ]
+        ]
+    },
+    {
+        "id": "e97ea9fdecc739c4",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "получение роли",
+        "func": "// Проверяем, что получили роль пользователя\nif (!msg.payload || msg.payload.length === 0) {\n    node.error(\"Не удалось получить роль пользователя\", msg);\n    return [null, msg];\n}\n\nconst userRole = msg.payload[0].role;\nmsg.userRole = userRole; // Сохраняем роль в сообщении\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 160,
+        "wires": [
+            [
+                "9b58ba8bc66a35cb"
+            ]
+        ]
+    },
+    {
+        "id": "c867954ffcc849d8",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "select * from events",
+        "name": "SQLite DB",
+        "x": 250,
+        "y": 160,
+        "wires": [
+            [
+                "e97ea9fdecc739c4"
+            ]
+        ]
+    },
+    {
+        "id": "0736f6e8124b7f73",
+        "type": "http in",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "url": "/schedule",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 440,
+        "wires": [
+            [
+                "849f5fa1eb8e8aed"
+            ]
+        ]
+    },
+    {
+        "id": "6b8cc300ad5f3b1b",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "Расписание",
+        "func": "msg.payload = {\n  \"events\": [\n    {\n      \"id\": 1,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-20\",\n      \"time\": \"09:45 - 11:20\",\n      \"name\": \"Системы искусственного интеллекта\",\n      \"teacher\": \"Солдатова Ольга Петровна\",\n      \"type\": \"Лабораторная\",\n      \"room\": \"507-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n    {\n      \"id\": 2,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-21\",\n      \"time\": \"11:30 - 13:05\",\n      \"name\": \"Системное программирование\",\n      \"teacher\": \"Привалов Александр Юрьевич\",\n      \"type\": \"Лабораторная\",\n      \"room\": \"407-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n    {\n      \"id\": 3,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-19\",\n      \"time\": \"08:00 - 09:35\",\n      \"name\": \"Системы искусственного интеллекта\",\n      \"teacher\": \"Солдатова Ольга Петровна\",\n      \"type\": \"Лабораторная\",\n      \"room\": \"507-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n    {\n      \"id\": 4,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-19\",\n      \"time\": \"09:45 - 11:20\",\n      \"name\": \"Технологии проектирования информационно-вычислительных систем\",\n      \"teacher\": \"Мезенцева Екатерина Михайловна\",\n      \"type\": \"Лекция\",\n      \"room\": \"\",\n      \"platform\": \"online\",\n      \"conference\": \"https://conference.example.com\"\n    },\n    {\n      \"id\": 5,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-23\",\n      \"time\": \"09:45 - 11:20\",\n      \"name\": \"Использование Linux\",\n      \"teacher\": \"Кузьмишина Татьяна Михайловна\",\n      \"type\": \"Лабораторная\",\n      \"room\": \"510-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n    {\n      \"id\": 6,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-19\",\n      \"time\": \"11:30 - 13:05\",\n      \"name\": \"Технологии проектирования информационно-вычислительных систем\",\n      \"teacher\": \"Мезенцева Екатерина Михайловна\",\n      \"type\": \"Лекция\",\n      \"room\": \"\",\n      \"platform\": \"online\",\n      \"conference\": \"https://conference.example.com\"\n    },\n    {\n      \"id\": 7,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-22\",\n      \"time\": \"11:30 - 13:05\",\n      \"name\": \"ИТ-практикум\",\n      \"teacher\": \"Сопченко Елена Вильевна\",\n      \"type\": \"Практика\",\n      \"room\": \"519-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n    {\n      \"id\": 8,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-23\",\n      \"time\": \"11:30 - 13:05\",\n      \"name\": \"Использование Linux\",\n      \"teacher\": \"Кузьмишина Татьяна Михайловна\",\n      \"type\": \"Лабораторная\",\n      \"room\": \"510-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n    {\n      \"id\": 9,\n      \"group\": \"21ВВВ1\",\n      \"date\": \"2025-05-23\",\n      \"time\": \"15:15 - 16:50\",\n      \"name\": \"ИТ-практикум\",\n      \"teacher\": \"Сопченко Елена Вильевна\",\n      \"type\": \"Практика\",\n      \"room\": \"519-14\",\n      \"platform\": \"\",\n      \"conference\": \"\"\n    },\n  ]\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 600,
+        "wires": [
+            []
+        ],
+        "icon": "font-awesome/fa-calendar"
+    },
+    {
+        "id": "f656923fe1ced9d7",
+        "type": "http response",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1350,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "16f6f1771e99ae89",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "select * from events",
+        "name": "SQLite DB",
+        "x": 1130,
+        "y": 440,
+        "wires": [
+            [
+                "f656923fe1ced9d7"
+            ]
+        ]
+    },
+    {
+        "id": "58ceb1ee01b7663c",
+        "type": "http in",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "url": "/schedule",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 500,
+        "wires": [
+            [
+                "1b7deb88e5838c73"
+            ]
+        ]
+    },
+    {
+        "id": "1b7deb88e5838c73",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "ввод данных",
+        "func": "const insertSql = `INSERT INTO events (gruppa, date, time, name, teacher, type, room, platform, conference) VALUES ('${msg.payload.gruppa}', '${msg.payload.date}', '${msg.payload.time}', '${msg.payload.name}', '${msg.payload.teacher}', '${msg.payload.type}', '${msg.payload.room}', '${msg.payload.platform}', '${msg.payload.conference}')`;\nmsg.topic = insertSql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 500,
+        "wires": [
+            [
+                "db04d53f3b01977b"
+            ]
+        ]
+    },
+    {
+        "id": "db04d53f3b01977b",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "",
+        "x": 620,
+        "y": 500,
+        "wires": [
+            [
+                "e6966d3e7e2cdf53"
+            ]
+        ]
+    },
+    {
+        "id": "e6966d3e7e2cdf53",
+        "type": "http response",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 840,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "849f5fa1eb8e8aed",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "получение группы",
+        "func": "// Получаем ID пользователя из куки\nconst userId = msg.req.cookies.user_id;\nif (!userId) {\n    msg.headers = {\n        \"Location\": \"/login\"\n    };\n    msg.statusCode = 302;\n    return [null, msg];\n}\n\nmsg.userId = userId;\n\n// Получаем группу пользователя из БД\nconst getUserGroupQuery = `SELECT gruppa FROM users WHERE id = ${msg.userId}`;\nmsg.topic = getUserGroupQuery;\n\n// Сохраняем оригинальное сообщение для следующего шага\nmsg.originalPayload = msg.payload;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 440,
+        "wires": [
+            [
+                "33c56e361b0c5488"
+            ]
+        ]
+    },
+    {
+        "id": "33c56e361b0c5488",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "",
+        "x": 620,
+        "y": 440,
+        "wires": [
+            [
+                "34294c39cdd16708"
+            ]
+        ]
+    },
+    {
+        "id": "34294c39cdd16708",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "получение расписания",
+        "func": "// Проверяем, что получили группу пользователя\nif (!msg.payload || msg.payload.length === 0) {\n    node.error(\"Не удалось получить группу пользователя\", msg);\n    return null;\n}\n\nconst userGroup = msg.payload[0].gruppa;\n\n// Формируем запрос для получения расписания только для этой группы\nif (userGroup === \"teacher\") {\n    msg.topic = `SELECT * FROM events`;\n} else {\n    msg.topic = `SELECT * FROM events WHERE gruppa = '${userGroup}'`;\n}\n\n// Восстанавливаем оригинальное сообщение\nmsg.payload = msg.originalPayload;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 440,
+        "wires": [
+            [
+                "16f6f1771e99ae89"
+            ]
+        ]
+    },
+    {
+        "id": "7f16958aef058167",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "Преподаватели по предметам",
+        "func": "const subjectName = msg.req.params.subject_name;\n\nswitch (subjectName) {\n    case \"Системы искусственного интеллекта\":\n        msg.payload = {\n            \"name\": \"Солдатова Ольга Петровна\",\n            \"email\": \"soldatova.op@ssau.ru\",\n            \"photo\": \"http://cabinet.ssau.ru/assets/staff_photo/soldatova_o_p.jpg\"\n        };\n        break;\n    case \"Технологии проектирования информационно-вычислительных систем\":\n        msg.payload = {\n            \"name\": \"Мезенцева Екатерина Михайловна\",\n            \"email\": \"mezenceva.em@ssau.ru\",\n            \"photo\": \"https://cabinet.ssau.ru/storage/photos/photo-813397191-63386c803b2e7.jpg\"\n        };\n        break;\n    case \"Системное программирование\":\n        msg.payload = {\n            \"name\": \"Привалов Александр Юрьевич\",\n            \"email\": \"privalov.ayu@ssau.ru\",\n            \"photo\": null\n        };\n        break;\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1650,
+        "y": 80,
+        "wires": [
+            [
+                "9c027dd27a1cc616"
+            ]
+        ],
+        "icon": "font-awesome/fa-user-circle-o"
+    },
+    {
+        "id": "a029268e80a98e77",
+        "type": "http in",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "url": "/teacher:subject_name",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 1360,
+        "y": 80,
+        "wires": [
+            [
+                "7f16958aef058167"
+            ]
+        ]
+    },
+    {
+        "id": "9c027dd27a1cc616",
+        "type": "http response",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1890,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "ef7a5da9587957db",
+        "type": "inject",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Инициализация БД",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "0.1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 550,
+        "y": 600,
+        "wires": [
+            [
+                "0ad1669754d81440"
+            ]
+        ]
+    },
+    {
+        "id": "0ad1669754d81440",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Создать таблицу events",
+        "func": "// Создаем таблицу пользователей, если она не существует\nconst sql = `CREATE TABLE IF NOT EXISTS events (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    gruppa TEXT NOT NULL,\n    date TEXT NOT NULL,\n    time TEXT NOT NULL,\n    name TEXT NOT NULL,\n    teacher TEXT NOT NULL,\n    type TEXT NOT NULL,\n    room TEXT,\n    platform TEXT,\n    conference TEXT\n)`;\n\nmsg.topic = sql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 600,
+        "wires": [
+            [
+                "c670a2a0e1a147cd"
+            ]
+        ]
+    },
+    {
+        "id": "c670a2a0e1a147cd",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "mydb": "d3f44785a6cfb327",
+        "sql": "",
+        "name": "SQLite DB",
+        "x": 1050,
+        "y": 600,
+        "wires": [
+            [
+                "506a261d3026523f"
+            ]
+        ]
+    },
+    {
+        "id": "506a261d3026523f",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "4435b9b11e8bb8df",
+        "type": "inject",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Вывод таблиц БД",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "SELECT name FROM sqlite_master WHERE type='table';",
+        "x": 550,
+        "y": 660,
+        "wires": [
+            [
+                "c0f3b2afb792826c"
+            ]
+        ]
+    },
+    {
+        "id": "521a5e7271fcb269",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "c0f3b2afb792826c",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "SQLite DB",
+        "x": 790,
+        "y": 660,
+        "wires": [
+            [
+                "521a5e7271fcb269"
+            ]
+        ]
+    },
+    {
+        "id": "0a156d769dc90c6e",
+        "type": "inject",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Вывод событий",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 540,
+        "y": 720,
+        "wires": [
+            [
+                "e830fc36391e8aca"
+            ]
+        ]
+    },
+    {
+        "id": "86716a0157a63135",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "все события",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "e830fc36391e8aca",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "fixed",
+        "sql": "select * from events",
+        "name": "SQLite DB",
+        "x": 790,
+        "y": 720,
+        "wires": [
+            [
+                "86716a0157a63135"
+            ]
+        ]
+    },
+    {
+        "id": "f90b46636f0f5855",
+        "type": "inject",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Создание события",
+        "props": [
+            {
+                "p": "msg.payload.gruppa",
+                "v": "21ВВВ1",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.date",
+                "v": "2025-05-20",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.time",
+                "v": "09:45 - 11:20",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.name",
+                "v": "Системы искусственного интеллекта",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.teacher",
+                "v": "Солдатова Ольга Петровна",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.type",
+                "v": "Лабораторная",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.room",
+                "v": "507-14",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.platform",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.conference",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 550,
+        "y": 780,
+        "wires": [
+            [
+                "d07dc257cc2e7b34"
+            ]
+        ]
+    },
+    {
+        "id": "d07dc257cc2e7b34",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "ввод данных",
+        "func": "const insertSql = `INSERT INTO events (id, gruppa, date, time, name, teacher, type, room, platform, conference) VALUES ('${msg.payload.id}', '${msg.payload.gruppa}', '${msg.payload.date}', '${msg.payload.time}', '${msg.payload.name}', '${msg.payload.teacher}', '${msg.payload.type}', '${msg.payload.room}', '${msg.payload.platform}', '${msg.payload.conference}')`;\nmsg.topic = insertSql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 780,
+        "wires": [
+            [
+                "ade0f032a5d1969d"
+            ]
+        ]
+    },
+    {
+        "id": "ade0f032a5d1969d",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "",
+        "x": 1070,
+        "y": 780,
+        "wires": [
+            [
+                "30f9663de217782b"
+            ]
+        ]
+    },
+    {
+        "id": "30f9663de217782b",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "cbaffe357d4b92cc",
+        "type": "inject",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Удалить из БД",
+        "props": [
+            {
+                "p": "topic.date",
+                "v": "2025-05-20",
+                "vt": "str"
+            },
+            {
+                "p": "topic.time",
+                "v": "09:45 - 11:20",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 540,
+        "y": 840,
+        "wires": [
+            [
+                "4d9fdba8846ce6c9"
+            ]
+        ]
+    },
+    {
+        "id": "4d9fdba8846ce6c9",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Команда",
+        "func": "if (msg.topic == \"all\") {\n    msg.topic = \"DELETE FROM events\";\n}\nelse if (msg.topic){//удалить по id\n    msg.topic = `DELETE FROM events WHERE date = '${msg.topic.date}' AND time = '${msg.topic.time}'`;\n}\nelse {\n    msg.topic = \"SELECT 'msg.topic пуст' AS text\";\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 840,
+        "wires": [
+            [
+                "5d7b2b3a65369fd3"
+            ]
+        ]
+    },
+    {
+        "id": "7b8d6d98e2cc821c",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "5d7b2b3a65369fd3",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "DELETE FROM hourly_stats",
+        "name": "",
+        "x": 1070,
+        "y": 840,
+        "wires": [
+            [
+                "7b8d6d98e2cc821c"
+            ]
+        ]
+    },
+    {
+        "id": "45113b6952cab182",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Команда",
+        "func": "const insertSql = `SELECT * FROM events WHERE date = '${msg.payload.date}' AND time = '${msg.payload.time}'`;\nmsg.topic = insertSql;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 900,
+        "wires": [
+            [
+                "d2ce509bad35943e"
+            ]
+        ]
+    },
+    {
+        "id": "191d03ab4cc2074e",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "mes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "d2ce509bad35943e",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "DELETE FROM hourly_stats",
+        "name": "",
+        "x": 1070,
+        "y": 900,
+        "wires": [
+            [
+                "191d03ab4cc2074e"
+            ]
+        ]
+    },
+    {
+        "id": "caf2fa8abd83d2c3",
+        "type": "inject",
+        "z": "b8ad15e59845239e",
+        "g": "6cebdc9467483554",
+        "name": "Найти событие",
+        "props": [
+            {
+                "p": "msg.payload.date",
+                "v": "2025-05-20",
+                "vt": "str"
+            },
+            {
+                "p": "msg.payload.time",
+                "v": "09:45 - 11:20",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 540,
+        "y": 900,
+        "wires": [
+            [
+                "45113b6952cab182"
+            ]
+        ]
+    },
+    {
+        "id": "f60db2fec6f5a72c",
+        "type": "http in",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "url": "/tea",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "7ea8cd8ae0ba711a"
+            ]
+        ]
+    },
+    {
+        "id": "1d2b986854c67369",
+        "type": "http in",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "url": "/tea_schedule",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "2f2f637812191cbe"
+            ]
+        ]
+    },
+    {
+        "id": "2f2f637812191cbe",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "учителя",
+        "func": "// В узле Function для /teacher_schedule\nconst teacher = msg.req.query.teacher;\nconst startDate = msg.req.query.start;\nconst endDate = msg.req.query.end;\n\nif (!teacher) {\n    msg.statusCode = 400;\n    msg.payload = { error: \"Teacher name is required\" };\n    return [null, msg];\n}\n\nmsg.topic = `SELECT * FROM events WHERE teacher = '${teacher}' \n             AND date BETWEEN '${startDate}' AND '${endDate}'\n             ORDER BY date, time`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 320,
+        "wires": [
+            [
+                "42e932ac55e2234b"
+            ]
+        ]
+    },
+    {
+        "id": "42e932ac55e2234b",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "msg.topic",
+        "sql": "SELECT name FROM sqlite_master WHERE type='table';",
+        "name": "",
+        "x": 640,
+        "y": 320,
+        "wires": [
+            [
+                "43a513127624f529"
+            ]
+        ]
+    },
+    {
+        "id": "a49e79c9273fc373",
+        "type": "http response",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 990,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "43a513127624f529",
+        "type": "http response",
+        "z": "b8ad15e59845239e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 870,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "2870a94edebb6e2e",
+        "type": "debug",
+        "z": "b8ad15e59845239e",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "9640050dbd577582",
+        "type": "function",
+        "z": "b8ad15e59845239e",
+        "name": "учителя",
+        "func": "// Узел \"Format Teachers Response\"\nif (!msg.payload || !Array.isArray(msg.payload)) {\n    msg.payload = [];\n} else {\n    // Преобразуем в массив строк\n    msg.payload = msg.payload.map(item => item.name);\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 240,
+        "wires": [
+            [
+                "a49e79c9273fc373"
+            ]
+        ]
+    },
+    {
+        "id": "7ea8cd8ae0ba711a",
+        "type": "sqlite",
+        "z": "b8ad15e59845239e",
+        "mydb": "d3f44785a6cfb327",
+        "sqlquery": "fixed",
+        "sql": "SELECT DISTINCT teacher as name FROM events WHERE teacher IS NOT NULL AND teacher != '';",
+        "name": "SQLite DB",
+        "x": 610,
+        "y": 240,
+        "wires": [
+            [
+                "9640050dbd577582"
+            ]
+        ]
+    },
+    {
+        "id": "d3f44785a6cfb327",
+        "type": "sqlitedb",
+        "db": "C:\\sqlite\\myusersdb.db",
+        "mode": "RWC"
+    }
+]
