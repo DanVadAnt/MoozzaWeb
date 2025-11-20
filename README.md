@@ -23,4 +23,12 @@
 
 Скриншоты сайта:
 
+<img width="1985" height="1099" alt="изображение" src="https://github.com/user-attachments/assets/f4a3c660-679f-4829-a0c6-1b9bff18df81" />
+
+<img width="886" height="672" alt="изображение" src="https://github.com/user-attachments/assets/8e117783-a681-40a4-89ac-206cff85ed91" />
+
+<img width="1880" height="806" alt="изображение" src="https://github.com/user-attachments/assets/550ac248-8f4d-474e-a30f-815e7045f8bb" />
+
+<img width="1212" height="765" alt="изображение" src="https://github.com/user-attachments/assets/f151f3b8-5574-4f4c-9b42-ff704d5a0733" />
+
 
